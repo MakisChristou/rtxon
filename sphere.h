@@ -7,7 +7,7 @@
 class Sphere
 {
     public:
-        vec3 origin;
+        vec3 center;
         double radius;
 
 
@@ -18,16 +18,26 @@ class Sphere
 
         Sphere(vec3 o, double r)
         {
-            origin = o;
+            center = o;
             radius = r;
         }
 
-        bool intersection(Ray r)
+        vec3 normal(vec3 P)
         {
-
-
-            return false;
+            return (P - center);
         }
+
+        vec3 getCenter()
+        {
+            return center;
+        }
+
+        double getRadius()
+        {
+            return radius;
+        }
+
+
 
         
 

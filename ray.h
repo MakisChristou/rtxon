@@ -18,8 +18,20 @@ class Ray
         Ray(vec3 o, vec3 d)
         {
             origin = o;
-            direction = d;
+            direction = d.normalize();
         }
+
+        vec3 getOrigin()
+        {
+            return origin;
+        }
+
+        vec3 getDirection()
+        {
+            return direction;
+        }
+
+
 
         
 };
