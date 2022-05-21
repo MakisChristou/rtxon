@@ -75,16 +75,6 @@ vec3 getRandomPoint(vec3 P, vec3 N)
 
 }
 
-
-
-vec3 colorPixel(Ray* r)
-{
-
-
-    
-}
-
-
 int getClosestSphere(std::vector<Sphere> *Spheres, Ray* r)
 {
     float tmin = MAXFLOAT;
@@ -107,6 +97,56 @@ int getClosestSphere(std::vector<Sphere> *Spheres, Ray* r)
     return minIndex;
 }
 
+
+vec3 colorPixel(std::vector<Sphere> *Spheres, Ray* r, int depth)
+{
+
+    if (depth <= 0)
+        return vec3(0,0,0);
+
+
+    int index = getClosestSphere(Spheres, r);
+
+    // Hit any sphere
+    if(index != -1)
+    {
+        Sphere hitSphere = (*Spheres)[index];
+        
+        double t = sphereInter(r,&hitSphere);
+
+        // Bounce new ray
+        
+        vec3 C = hitSphere.center;
+
+        vec3 P = r->getOrigin() + r->getDirection() * t; 
+
+        vec3 N = hitSphere.normal(P);
+
+        vec3 S = getRandomPoint(P, N);
+
+        // New ray will have origin = P and direction = S
+
+        Ray rr(P,S);
+
+        return 0.5 * colorPixel(Spheres, &rr, depth -1);
+
+
+    }
+    else
+    {
+        // vec3 unit_direction = r->getDirection().normalize();
+        // auto t = 0.5*(unit_direction.y + 1.0);
+        // return (1.0 - t) * vec3(255, 255, 255) + t * vec3(125, 200, 255);
+
+        return vec3(255,255,255);
+    }
+
+    
+}
+
+
+
+
 // Prints PPM in std
 void writePPM(Color* pixelColors, int image_width, int image_height)
 {
@@ -126,8 +166,8 @@ void writePPM(Color* pixelColors, int image_width, int image_height)
 
 int main(int argc, char** argv)
 {   
-    int image_width  = 400;
-    int image_height = 200;
+    int image_width  = 800;
+    int image_height = 400;
 
     Camera cam(vec3(0,0,0), vec3(-2,1,-1), vec3(2,1,-1), vec3(-2,-1,-1), vec3(2,-1,-1));
     
@@ -136,7 +176,7 @@ int main(int argc, char** argv)
     
     Sphere s1(vec3(0.0, 0.0, -1.0), 0.2);
 
-    Sphere s2(vec3(0.0, -100.5, -1.0), 100);
+    Sphere s2(vec3(0.0, -100.2, -1.0), 100);
 
     Sphere s3(vec3(0.5, 0.0, -1.0), 0.2);
 
@@ -196,28 +236,31 @@ int main(int argc, char** argv)
             // Get current ray
             Ray r = cam.getRay(i,j,image_width, image_height);
             
-            std::cerr << "i: " << i << " j: " << j << " ";
-            std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
-            std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
+            // std::cerr << "i: " << i << " j: " << j << " ";
+            // std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
+            // std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
 
 
             pixelColors[i*image_height + j] = black;
 
-            bool flag = false;
+            // bool flag = false;
 
-            int index = getClosestSphere(&Spheres, &r);
+            
 
-            // Hit any sphere
-            if(index != -1)
-            {
-                flag = true;
-                pixelColors[i*image_height + j] = white;
+            vec3 pixelVec3 = colorPixel(&Spheres, &r, 59990);
 
-            }
+            Color pixelColor;
+
+            pixelColor.R = pixelVec3.x;
+            pixelColor.G = pixelVec3.y;
+            pixelColor.B = pixelVec3.z;
+
+
+            pixelColors[i*image_height + j] = pixelColor;
 
     
 
-            std::cerr << " flag: " << flag << std::endl;
+            // std::cerr << " flag: " << flag << std::endl;
            
         }
     }
