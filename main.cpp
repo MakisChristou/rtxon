@@ -54,7 +54,6 @@ typedef struct
     int B;
 }Color;
 
-
 vec3 getRandomPoint(vec3 P, vec3 N)
 {
     // Calculate unit circle outside of sphere
@@ -134,18 +133,15 @@ vec3 colorPixel(std::vector<Sphere> *Spheres, Ray* r, int depth)
     }
     else
     {
-        // vec3 unit_direction = r->getDirection().normalize();
-        // auto t = 0.5*(unit_direction.y + 1.0);
-        // return (1.0 - t) * vec3(255, 255, 255) + t * vec3(125, 200, 255);
+        vec3 unit_direction = r->getDirection().normalize();
+        auto t = 0.5*(unit_direction.y + 1.0);
+        return (1.0 - t) * vec3(255, 255, 255) + t * vec3(125, 200, 255);
 
-        return vec3(255,255,255);
+        // return vec3(255,255,255);
     }
 
     
 }
-
-
-
 
 // Prints PPM in std
 void writePPM(Color* pixelColors, int image_width, int image_height)
@@ -166,23 +162,17 @@ void writePPM(Color* pixelColors, int image_width, int image_height)
 
 int main(int argc, char** argv)
 {   
-    int image_width  = 800;
-    int image_height = 400;
+    int image_width  = 800*2;
+    int image_height = 400*2;
+    int s_max = 128;
+    int depth = 100;
 
-    Camera cam(vec3(0,0,0), vec3(-2,1,-1), vec3(2,1,-1), vec3(-2,-1,-1), vec3(2,-1,-1));
-    
-    
-
+    Camera cam(vec3(0.0, 0.0 ,-0.4), vec3(-2,1,-1), vec3(2,1,-1), vec3(-2,-1,-1), vec3(2,-1,-1));
     
     Sphere s1(vec3(0.0, 0.0, -1.0), 0.2);
-
     Sphere s2(vec3(0.0, -100.2, -1.0), 100);
-
     Sphere s3(vec3(0.5, 0.0, -1.0), 0.2);
-
     Sphere s4(vec3(-0.5, 0.0, -1.0), 0.2);
-
-
 
     std::vector<Sphere> Spheres;
 
@@ -191,8 +181,6 @@ int main(int argc, char** argv)
     Spheres.push_back(s3);
     Spheres.push_back(s4);
     
-
-
 
     Color white;
     white.R = 255;
@@ -233,34 +221,54 @@ int main(int argc, char** argv)
     {
         for(int j = 0; j < image_height; j++)
         {
-            // Get current ray
-            Ray r = cam.getRay(i,j,image_width, image_height);
-            
-            // std::cerr << "i: " << i << " j: " << j << " ";
-            // std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
-            // std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
+
+            vec3 pixelVec3Sum;
+
+            pixelVec3Sum.x = 0;
+            pixelVec3Sum.y = 0;
+            pixelVec3Sum.z = 0;
+
+            for(double k = 0.0; k < 1.0; k+=1.0/s_max)
+            {
+                // Get current ray
+                double ii  = i+k;
+                double jj = j+k;
+                Ray r = cam.getRay(ii, jj, image_width, image_height);
+                
+                // std::cerr << "i: " << i << " j: " << j << " ";
+                // std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
+                // std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
 
 
-            pixelColors[i*image_height + j] = black;
+                pixelColors[i*image_height + j] = black;
 
-            // bool flag = false;
+                // bool flag = false;
 
-            
+                
 
-            vec3 pixelVec3 = colorPixel(&Spheres, &r, 59990);
+                pixelVec3Sum = pixelVec3Sum + colorPixel(&Spheres, &r, depth);
+
+                
+        
+
+                // std::cerr << " flag: " << flag << std::endl;
+            }
+
+
+
+            pixelVec3Sum.x = pixelVec3Sum.x / s_max;
+            pixelVec3Sum.y = pixelVec3Sum.y / s_max;
+            pixelVec3Sum.z = pixelVec3Sum.z / s_max;
+
 
             Color pixelColor;
 
-            pixelColor.R = pixelVec3.x;
-            pixelColor.G = pixelVec3.y;
-            pixelColor.B = pixelVec3.z;
+            pixelColor.R = pixelVec3Sum.x;
+            pixelColor.G = pixelVec3Sum.y;
+            pixelColor.B = pixelVec3Sum.z;
 
-
-            pixelColors[i*image_height + j] = pixelColor;
-
-    
-
-            // std::cerr << " flag: " << flag << std::endl;
+            pixelColors[i*image_height + j]= pixelColor;
+            
            
         }
     }
