@@ -33,24 +33,19 @@ double sphereInter(Ray* ray, Sphere* sphere)
     double c = oc.dot(oc) - sphere->radius*sphere->radius;
 
     double Delta = b*b - 4 * a * c;
-    double t1,t2 = 0.0;
+    double t1 = 0.0;
 
     if(Delta < 0.0f)
     {
-        return -1;
+        return -1.0;;
     }
     else
     {
         //std::cerr << "t1: " << t1 << " ";
-        return (-b - sqrt(Delta)) / (2*a);
+        return (-b - sqrt(Delta) ) / (2.0*a);;
     }
 }
 
-
-bool planeInter(Ray* ray, Sphere* Plane, vec3* point)
-{
-    return false;
-}
 
 typedef struct 
 {
@@ -101,7 +96,7 @@ int getClosestSphere(std::vector<Sphere> *Spheres, Ray* r)
 
         double t = sphereInter(r,&sphere);
 
-        if(t < tmin)
+        if(t < tmin && t > 0)
         {
             tmin = t;
             minIndex = i;
@@ -132,32 +127,29 @@ void writePPM(Color* pixelColors, int image_width, int image_height)
 int main(int argc, char** argv)
 {   
     int image_width  = 400;
-    int image_height = 400;
+    int image_height = 200;
 
-    Camera cam(vec3(0,-1,0), vec3(1,1,1), vec3(-1,1,1), vec3(1,1,-1), vec3(-1,1,-1));
+    Camera cam(vec3(0,0,0), vec3(-2,1,-1), vec3(2,1,-1), vec3(-2,-1,-1), vec3(2,-1,-1));
     
     
-    Sphere s1(vec3(0,4,0), 1.0);
 
+    
+    Sphere s1(vec3(0.0, 0.0, -1.0), 0.2);
 
-    Sphere s2(vec3(0.0, 4.0, -100.0), 100);
+    Sphere s2(vec3(0.0, -100.5, -1.0), 100);
 
-    Sphere s3(vec3(2.5, 4.0, 0.0), 1.0);
+    Sphere s3(vec3(0.5, 0.0, -1.0), 0.2);
 
-    Sphere s4(vec3(-2.5, 4.0, 0.0), 1.0);
+    Sphere s4(vec3(-0.5, 0.0, -1.0), 0.2);
 
-    Sphere s5(vec3(0.0, -2.5, 0.0), 1.0);
 
 
     std::vector<Sphere> Spheres;
 
     Spheres.push_back(s1);
     Spheres.push_back(s2);
-    // Spheres.push_back(s3);
-    // Spheres.push_back(s4);
-    // Spheres.push_back(s5);
-
-    // std::cerr << Spheres.size() << std::endl;
+    Spheres.push_back(s3);
+    Spheres.push_back(s4);
     
 
 
@@ -195,8 +187,6 @@ int main(int argc, char** argv)
     // Allocate memory for pixel colors
     Color *pixelColors = (Color*)malloc(pixelBytes); // pixelColours
 
-    vec3 points[2];
-
     
 
     for(int i = 0; i < image_width; i++)
@@ -206,37 +196,28 @@ int main(int argc, char** argv)
             // Get current ray
             Ray r = cam.getRay(i,j,image_width, image_height);
             
-            // std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
-            // std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
+            std::cerr << "i: " << i << " j: " << j << " ";
+            std::cerr  << r.getOrigin().x  << " "<< r.getOrigin().y  << " " << r.getOrigin().z;
+            std::cerr << " -> " << r.getDirection().x  << " "<< r.getDirection().y  << " " << r.getDirection().z << " ";
 
 
             pixelColors[i*image_height + j] = black;
 
             bool flag = false;
-            
+
             int index = getClosestSphere(&Spheres, &r);
 
-            // double t = sphereInter(&r, &Spheres[index]);
-
-            // vec3 temp = r.getDirection() * t;
-
-            // vec3 P = r.getOrigin() + temp; // Point of intersection
-
-            // temp = s2.getCenter();
-
-            // vec3 N = P - temp; // Normal at intersection point
-
-            // vec3 S = getRandomPoint(P, N);
-
-
-            if(index > 0)
+            // Hit any sphere
+            if(index != -1)
             {
-                pixelColors[i*image_height + j] = white;
                 flag = true;
+                pixelColors[i*image_height + j] = white;
+
             }
 
+    
 
-            // std::cerr << " flag: " << flag << std::endl;
+            std::cerr << " flag: " << flag << std::endl;
            
         }
     }

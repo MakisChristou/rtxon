@@ -9,7 +9,7 @@ CC=g++
 all: $(MYPROGRAM)
 
 $(MYPROGRAM): $(SOURCE)
-	$(CC) -O3 $(SOURCE) -o $(MYPROGRAM) $(LIBS)
+	$(CC) $(SOURCE) -o $(MYPROGRAM) $(LIBS)
 
 clean:
 	rm -f $(MYPROGRAM) *.ppm

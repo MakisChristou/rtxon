@@ -31,7 +31,7 @@ class Camera
             return (output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start));
         }
 
-        Ray getRay(int i, int j, int image_width, int image_height)
+        Ray getRay(double i, double j, int image_width, int image_height)
         {
             Ray currentRay;
 
@@ -41,10 +41,10 @@ class Camera
             double u = map(i, P[0].x, P[1].x, 0, image_width);
 
             // Map Y coordinate
-            double v = map(j, P[0].z, P[2].z, 0, image_height);
+            double v = map(j, P[0].y, P[2].y, 0, image_height);
 
             
-            vec3 screenPoint(u, P[0].y, v);
+            vec3 screenPoint(u, -v, P[0].z);
 
             currentRay.direction = screenPoint;
 
