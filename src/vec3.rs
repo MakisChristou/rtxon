@@ -1,3 +1,6 @@
+use std::ops;
+
+#[derive(Debug, PartialEq)]
 pub struct vec3 {
     pub x: f64,
     pub y: f64,
@@ -22,6 +25,21 @@ impl vec3 {
     }
 }
 
+impl ops::Add<vec3> for vec3 {
+    type Output = vec3;
+    fn add(self, _rhs: vec3) -> vec3 {
+        vec3::new(self.x + _rhs.x, self.y + _rhs.y, self.z + _rhs.z) 
+    }
+}
+
+impl ops::Sub<vec3> for vec3 {
+    type Output = vec3;
+    fn sub(self, _rhs: vec3) -> vec3 {
+        vec3::new(self.x - _rhs.x, self.y - _rhs.y, self.z - _rhs.z) 
+    }
+}
+
+
 #[cfg(test)]
 mod tests{
     use crate::vec3::vec3;
@@ -30,19 +48,35 @@ mod tests{
     #[test]
     fn should_instantiate_vector() {
         let v = vec3::new(1.0, 2.0, 3.0);
-        assert!(v.x == 1.0 && v.y == 2.0 && v.z == 3.0);
+        assert_eq!(v, vec3{x: 1.0, y: 2.0, z: 3.0});
     }
 
     #[test]
     fn should_have_correct_length_squared(){
         let v = vec3::new(1.0, 1.0, 5.0);
-        assert!(v.length_squared() == 27.0);
+        assert_eq!(v.length_squared(), 27.0);
     }
 
     #[test]
     fn should_have_correct_length(){
         let v = vec3::new(3.0, 2.0, 5.0);
-        assert!(v.length() == f64::sqrt(38.0));
+        assert_eq!(v.length(), f64::sqrt(38.0));
+    }
+
+    #[test]
+    fn should_add_correctly(){
+        let v1 = vec3::new(3.0, 2.0, 5.0);
+        let v2 = vec3::new(4.0, 6.0, 5.0);
+        let v3 = v1 + v2;
+        assert_eq!(v3, vec3{x: 7.0, y: 8.0, z: 10.0});
+    }
+
+    #[test]
+    fn should_sub_correctly(){
+        let v1 = vec3::new(3.0, 2.0, 5.0);
+        let v2 = vec3::new(4.0, 6.0, 5.0);
+        let v3 = v1 - v2;
+        assert_eq!(v3, vec3{x: -1.0, y: -4.0, z: 0.0});
     }
 
 }
