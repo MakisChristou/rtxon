@@ -1,5 +1,6 @@
-fn main() {
+mod vec3;
 
+fn main() {
     let image_width = 256;
     let image_height = 256;
 
@@ -7,8 +8,7 @@ fn main() {
     println!("P3\n{} {}\n255", image_width, image_height);
 
     for j in (0..image_height).rev() {
-
-        eprint!("\rScanlines remaining: {}",j);
+        eprint!("\rScanlines remaining: {}", j);
 
         for i in 0..image_width {
             let r: f32 = (i as f32) / (image_width as f32 - 1.0);
@@ -19,7 +19,7 @@ fn main() {
             let ig = (255.999 * g) as i32;
             let ib = (255.999 * b) as i32;
 
-            println!("{} {} {}", ir,ig,ib);
-        } 
+            println!("{} {} {}", ir, ig, ib);
+        }
     }
 }
