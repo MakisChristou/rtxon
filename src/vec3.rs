@@ -55,6 +55,14 @@ impl ops::Mul<f64> for vec3 {
     }
 }
 
+impl ops::Div<f64> for vec3 {
+    type Output = vec3;
+
+    fn div(self, _rhs: f64) -> vec3{
+        vec3::new(self.x / _rhs, self.y / _rhs, self.z / _rhs) 
+    }
+}
+
 
 #[cfg(test)]
 mod tests{
@@ -114,6 +122,13 @@ mod tests{
         let v1 = vec3::new(3.0, 2.0, 5.0);
         let v3 = v1 * 10.0;
         assert_eq!(v3, vec3{x: 30.0, y: 20.0, z: 50.0});
+    }
+
+    #[test]
+    fn should_div_correctly(){
+        let v1 = vec3::new(30.0, 20.0, 50.0);
+        let v3 = v1 / 10.0;
+        assert_eq!(v3, vec3{x: 3.0, y: 2.0, z: 5.0});
     }
 
 }
