@@ -10,6 +10,14 @@ impl Ray {
         Ray { origin, direction }
     }
 
+    pub fn direction(&self) -> Vec3 {
+        self.direction
+    }
+
+    pub fn origin(&self) -> Vec3 {
+        self.origin
+    }
+
     pub fn at(&self, t: f64) -> Vec3 {
         self.origin + self.direction * t
     }
@@ -42,5 +50,39 @@ mod tests {
                 z: 10.0
             }
         );
+    }
+
+    #[test]
+    fn should_give_correct_origin() {
+        let origin = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+        let direction = Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        };
+        let ray = Ray { origin, direction };
+
+        assert_eq!(ray.origin(), origin);
+    }
+
+    #[test]
+    fn should_give_correct_direction() {
+        let origin = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+        let direction = Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        };
+        let ray = Ray { origin, direction };
+
+        assert_eq!(ray.direction(), direction);
     }
 }
