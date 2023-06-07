@@ -9,33 +9,31 @@ use crate::utils::color::Color;
 use crate::utils::write_color;
 
 fn ray_color(r: &Ray) -> Color {
-    // Random red sphere
-    if hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, &r) {
-        return Color::new(1.0, 0.0, 0.0);
+    // Random normal sphere
+    let t = hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, &r);
+
+    if t > 0.0 {
+        let n = Vec3::unit_vector(&(r.at(t) - Vec3::new(0.0, 0.0, -1.0)));
+        return Color::new(n.x + 1.0, n.y + 1.0, n.z + 1.0) * 0.5;
     }
 
     // Render background
     let unit_direction = Vec3::unit_vector(&r.direction());
     let t = 0.5 * unit_direction.y + 1.0;
-    return Color {
-        r: 1.0,
-        g: 1.0,
-        b: 1.0,
-    } * (1.0 - t)
-        + Color {
-            r: 0.5,
-            g: 0.7,
-            b: 1.0,
-        } * t;
+    return Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t;
 }
 
-fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> bool {
+fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
     let oc = r.origin() - *center;
     let a = Vec3::dot(&r.direction(), &r.direction());
     let b = 2.0 * Vec3::dot(&oc, &r.direction());
     let c = Vec3::dot(&oc, &oc) - radius * radius;
     let discriminant = b * b - 4.0 * a * c;
-    discriminant > 0.0
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (-b - f64::sqrt(discriminant)) / (2.0 * a);
+    }
 }
 
 fn main() {
