@@ -1,12 +1,11 @@
 use crate::{ray::Ray, vec3::Vec3};
 
-
-struct HitRecord {
-    p: Vec3,
-    normal: Vec3,
-    t: f64,
+pub struct HitRecord {
+    pub p: Vec3,
+    pub normal: Vec3,
+    pub t: f64,
 }
 
-trait Hitable {
-    fn hit(r: &Ray, t_min: f64, t_max: f64, rec: &HitRecord) -> bool;
+pub trait Hitable {
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
 }

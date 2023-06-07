@@ -1,7 +1,8 @@
+mod hitable;
 mod ray;
+mod sphere;
 mod utils;
 mod vec3;
-mod hitable;
 
 use ray::Ray;
 use vec3::Vec3;
