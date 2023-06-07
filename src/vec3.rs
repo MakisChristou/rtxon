@@ -36,12 +36,12 @@ impl Vec3 {
         }
     }
 
-    pub fn unit_vector(&self) -> Vec3 {
-        let l = self.length();
+    pub fn unit_vector(v: &Vec3) -> Vec3 {
+        let l = v.length();
         Vec3 {
-            x: self.x / l,
-            y: self.y / l,
-            z: self.z / l,
+            x: v.x / l,
+            y: v.y / l,
+            z: v.z / l,
         }
     }
 }
@@ -225,7 +225,7 @@ mod tests {
     #[test]
     fn should_get_correct_unit_vector() {
         let v1 = Vec3::new(8.0, -3.0, 5.0);
-        let v3 = v1.unit_vector();
+        let v3 = Vec3::unit_vector(&v1);
         assert_eq!(
             v3,
             Vec3 {
