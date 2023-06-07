@@ -24,8 +24,8 @@ impl Vec3 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn dot(&self, u: &Vec3) -> f64 {
-        self.x * u.x + self.y * u.y + self.z * u.z
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
+        v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
     }
 
     pub fn cross(&self, u: &Vec3) -> Vec3 {
@@ -203,7 +203,7 @@ mod tests {
     fn should_dot_correctly() {
         let v1 = Vec3::new(3.0, 2.0, 5.0);
         let v2 = Vec3::new(4.0, 6.0, 5.0);
-        let v3 = v1.dot(&v2);
+        let v3 = Vec3::dot(&v1, &v2);
         assert_eq!(v3, 49.0);
     }
 
