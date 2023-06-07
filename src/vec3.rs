@@ -35,6 +35,15 @@ impl Vec3 {
             z: self.x * u.y - self.y * u.x,
         }
     }
+
+    pub fn unit_vector(&self) -> Vec3 {
+        let l = self.length();
+        Vec3 {
+            x: self.x / l,
+            y: self.y / l,
+            z: self.z / l,
+        }
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {
@@ -209,6 +218,20 @@ mod tests {
                 x: -20.0,
                 y: 5.0,
                 z: 10.0
+            }
+        );
+    }
+
+    #[test]
+    fn should_get_correct_unit_vector() {
+        let v1 = Vec3::new(8.0, -3.0, 5.0);
+        let v3 = v1.unit_vector();
+        assert_eq!(
+            v3,
+            Vec3 {
+                x: 0.8081220356417685,
+                y: -0.30304576336566325,
+                z: 0.5050762722761054
             }
         );
     }
