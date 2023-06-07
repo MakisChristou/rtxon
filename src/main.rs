@@ -1,3 +1,4 @@
+mod ray;
 mod utils;
 mod vec3;
 
