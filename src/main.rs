@@ -1,4 +1,5 @@
 mod hitable;
+mod hitable_list;
 mod ray;
 mod sphere;
 mod utils;
