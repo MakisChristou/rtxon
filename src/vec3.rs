@@ -84,6 +84,14 @@ impl ops::Div<f64> for Vec3 {
     }
 }
 
+impl ops::Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Vec3 {
+        Vec3::new(-self.x, -self.y, -self.z)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::vec3::Vec3;
@@ -234,5 +242,12 @@ mod tests {
                 z: 0.5050762722761054
             }
         );
+    }
+
+    #[test]
+    fn should_have_negative_trait() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v3 = -v1;
+        assert_eq!(v3, Vec3::new(-1.0, -2.0, -3.0));
     }
 }
