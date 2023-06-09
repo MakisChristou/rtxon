@@ -3,8 +3,8 @@ pub mod color;
 use crate::utils::color::Color;
 
 // Static variables
-static infinity: f64 = std::f64::INFINITY;
-static pi: f64 = std::f64::consts::PI;
+pub static infinity: f64 = std::f64::INFINITY;
+pub static pi: f64 = std::f64::consts::PI;
 
 pub fn write_color(c: Color) {
     let ir = (255.999 * c.r) as i32;
@@ -16,4 +16,3 @@ pub fn write_color(c: Color) {
 pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * pi / 180.0
 }
-
