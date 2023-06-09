@@ -1,5 +1,7 @@
 use std::ops;
 
+use crate::utils::random_double;
+
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
@@ -44,6 +46,26 @@ impl Vec3 {
             z: v.z / l,
         }
     }
+
+    pub fn random(range: Option<(f64, f64)>) -> Vec3 {
+        match range {
+            Some(range) => Vec3::new(random_double(Some(range)), random_double(Some(range)), random_double(Some(range))),
+            None => {
+                Vec3::new(random_double(None), random_double(None), random_double(None))
+            }
+        }   
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3{
+        loop {
+            let p = Vec3::random(Some((-1.0, 1.0)));
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+
 }
 
 impl ops::Add<Vec3> for Vec3 {
