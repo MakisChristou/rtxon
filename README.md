@@ -1,6 +1,10 @@
 # RTX On
-A CUDA based Raytracer I made for fun and learning.
+Yet another Rust raytracer implementation. The goal of this project is to familiarize myself with more intermidiate concepts in Rust such as traits, lifetimes and design patterns. The source code is my implementation of [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) by Peter Shirley.
 
+## Rendering default scene
+```bash
+cargo run --release > file.ppm
+```
 
 ## Renders
 
