@@ -1,5 +1,8 @@
 use std::ops;
 
+// mod vec3;
+use crate::Vec3;
+
 pub struct Color {
     pub r: f64,
     pub g: f64,
@@ -25,5 +28,11 @@ impl ops::Add<Color> for Color {
 
     fn add(self, _rhs: Color) -> Color {
         Color::new(self.r + _rhs.r, self.g + _rhs.g, self.b + _rhs.b)
+    }
+}
+
+impl From<Vec3> for Color {
+    fn from(v: Vec3) -> Color {
+        Color::new(v.x, v.y, v.z)
     }
 }
