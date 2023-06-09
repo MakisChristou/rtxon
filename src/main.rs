@@ -5,24 +5,27 @@ mod sphere;
 mod utils;
 mod vec3;
 
+use hitable::HitRecord;
 use ray::Ray;
 use vec3::Vec3;
 
+use crate::hitable::Hitable;
+use crate::hitable_list::HitableList;
+use crate::sphere::Sphere;
 use crate::utils::color::Color;
+use crate::utils::infinity;
 use crate::utils::write_color;
 
-fn ray_color(r: &Ray) -> Color {
-    // Random normal sphere
-    let t = hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, &r);
-
-    if t > 0.0 {
-        let n = Vec3::unit_vector(&(r.at(t) - Vec3::new(0.0, 0.0, -1.0)));
-        return Color::new(n.x + 1.0, n.y + 1.0, n.z + 1.0) * 0.5;
+fn ray_color(r: &Ray, world: &dyn Hitable) -> Color {
+    let mut rec = HitRecord::default();
+    // If hit something
+    if world.hit(r, 0.0, infinity, &mut rec) {
+        return (Color::from(rec.normal) + Color::new(1.0, 1.0, 1.0)) * 0.5;
     }
 
-    // Render background
+    // If hit nothing return background
     let unit_direction = Vec3::unit_vector(&r.direction());
-    let t = 0.5 * unit_direction.y + 1.0;
+    let t = (unit_direction.y + 1.0) * 0.5;
     return Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t;
 }
 
@@ -50,6 +53,11 @@ fn main() {
     let viewport_width = aspect_ratio * viewport_height;
     let focal_length = 1.0;
 
+    // World
+    let mut world = HitableList::new();
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5));
+    world.add(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0));
+
     let origin = Vec3::new(0.0, 0.0, 0.0);
     let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
     let vertical = Vec3::new(0.0, viewport_height, 0.0);
@@ -71,13 +79,7 @@ fn main() {
                 lower_left_corner + horizontal * u + vertical * v - origin,
             );
 
-            let pixel_color = ray_color(&r);
-
-            let c = Color {
-                r: (i as f64) / (image_width as f64 - 1.0),
-                g: (j as f64) / (image_height as f64 - 1.0),
-                b: 0.25,
-            };
+            let pixel_color = ray_color(&r, &world);
 
             write_color(pixel_color);
         }

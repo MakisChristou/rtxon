@@ -4,9 +4,15 @@ use crate::{
     vec3::Vec3,
 };
 
-struct Sphere {
+pub struct Sphere {
     center: Vec3,
     radius: f64,
+}
+
+impl Sphere {
+    pub fn new(center: Vec3, radius: f64) -> Self {
+        Sphere { center, radius }
+    }
 }
 
 impl Hitable for Sphere {
