@@ -29,7 +29,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     // If hit something
     if world.hit(r, 0.001, infinity, &mut rec) {
         // Bounce
-        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+        let target = rec.p + rec.normal + Vec3::random_in_unit_vector();
         return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
     }
 
@@ -55,7 +55,7 @@ fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 400;
+    let image_width: usize = 1920;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
     let samples_per_pixel = 100;
     let max_depth = 50;
