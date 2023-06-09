@@ -27,7 +27,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     }
 
     // If hit something
-    if world.hit(r, 0.0, infinity, &mut rec) {
+    if world.hit(r, 0.001, infinity, &mut rec) {
         // Bounce
         let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
         return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
@@ -77,7 +77,7 @@ fn main() {
     println!("P3\n{} {}\n255", image_width, image_height);
 
     for j in (0..image_height).rev() {
-        
+
         eprint!("\rScanlines remaining: {}", j);
 
         for i in 0..image_width {
