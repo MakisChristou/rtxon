@@ -1,10 +1,14 @@
 mod camera;
 mod hitable;
 mod hitable_list;
+mod lambertian;
+mod material;
 mod ray;
 mod sphere;
 mod utils;
 mod vec3;
+
+use std::sync::Arc;
 
 use camera::Camera;
 use hitable::HitRecord;
@@ -13,6 +17,7 @@ use vec3::Vec3;
 
 use crate::hitable::Hitable;
 use crate::hitable_list::HitableList;
+use crate::lambertian::Lambertian;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
 use crate::utils::infinity;
@@ -54,8 +59,16 @@ fn main() {
 
     // World
     let mut world = HitableList::new();
-    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5));
-    world.add(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0));
+    world.add(Sphere::new(
+        Vec3::new(0.0, 0.0, -1.0),
+        0.5,
+        Arc::new(Lambertian::new(Color::new(255.0, 0.0, 0.0))),
+    ));
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        Arc::new(Lambertian::new(Color::new(125.0, 125.0, 125.0))),
+    ));
 
     // Camera
     let cam = Camera::new();

@@ -1,5 +1,8 @@
+use std::sync::Arc;
+
 use crate::{
     hitable::{HitRecord, Hitable},
+    material::Material,
     ray::Ray,
     vec3::Vec3,
 };
@@ -7,11 +10,16 @@ use crate::{
 pub struct Sphere {
     center: Vec3,
     radius: f64,
+    mat_ptr: Arc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64) -> Self {
-        Sphere { center, radius }
+    pub fn new(center: Vec3, radius: f64, mat_ptr: Arc<dyn Material>) -> Self {
+        Sphere {
+            center,
+            radius,
+            mat_ptr,
+        }
     }
 }
 
@@ -45,9 +53,8 @@ impl Hitable for Sphere {
 
         let outward_normal = (rec.p - self.center) / self.radius;
         rec.set_face_normal(r, &outward_normal);
+        rec.mat_ptr = Arc::clone(&self.mat_ptr);
 
         return true;
     }
 }
-
-impl Sphere {}

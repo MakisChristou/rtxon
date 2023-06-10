@@ -84,6 +84,12 @@ impl Vec3 {
             return -in_unit_sphere;
         }
     }
+
+    pub fn near_zero(&self) -> bool {
+        // Return true if the vector is close to zero in all dimentions
+        let s = 1e-18;
+        return (f64::abs(self.x) < s) && (f64::abs(self.y) < s) && (f64::abs(self.z) < s);
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {

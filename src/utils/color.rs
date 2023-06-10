@@ -3,6 +3,7 @@ use std::ops;
 // mod vec3;
 use crate::Vec3;
 
+#[derive(Copy, Clone)]
 pub struct Color {
     pub r: f64,
     pub g: f64,
