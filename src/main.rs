@@ -1,4 +1,5 @@
 mod camera;
+mod dielectric;
 mod hitable;
 mod hitable_list;
 mod lambertian;
@@ -10,6 +11,7 @@ mod utils;
 mod vec3;
 
 use crate::camera::Camera;
+use crate::dielectric::Dielectric;
 use crate::hitable::HitRecord;
 use crate::hitable::Hitable;
 use crate::hitable_list::HitableList;
@@ -70,8 +72,8 @@ fn main() {
     let mut world = HitableList::new();
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Arc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let material_left = Arc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
+    let material_center = Arc::new(Dielectric::new(1.5));
+    let material_left = Arc::new(Dielectric::new(1.5));
     let material_right = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.1));
 
     world.add(Sphere::new(
