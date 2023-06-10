@@ -1,4 +1,10 @@
-use crate::{hitable::HitRecord, material::Material, ray::Ray, utils::color::Color, vec3::Vec3};
+use crate::{
+    hitable::HitRecord,
+    material::Material,
+    ray::Ray,
+    utils::{color::Color, random_double},
+    vec3::Vec3,
+};
 
 pub struct Dielectric {
     ir: f64,
@@ -7,6 +13,13 @@ pub struct Dielectric {
 impl Dielectric {
     pub fn new(ir: f64) -> Self {
         Dielectric { ir }
+    }
+
+    fn reflectance(&self, cosine: f64, ref_idx: f64) -> f64 {
+        // Use Schlick's approximation for reflectance
+        let r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+        let r0 = r0 * r0;
+        return r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0);
     }
 }
 
@@ -34,7 +47,7 @@ impl Material for Dielectric {
         let cannot_refract = reflection_ratio * sin_theta > 1.0;
         let mut direction = Vec3::new(0.0, 0.0, 0.0);
 
-        if cannot_refract {
+        if cannot_refract || self.reflectance(cos_theta, reflection_ratio) > random_double(None) {
             direction = Vec3::reflect(&unit_direction, &rec.normal);
         } else {
             direction = Vec3::refract(&unit_direction, &rec.normal, reflection_ratio);
