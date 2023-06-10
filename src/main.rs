@@ -22,7 +22,7 @@ use crate::utils::write_color;
 fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     let mut rec = HitRecord::default();
 
-    if depth <= 0 {
+    if depth == 0 {
         return Color::new(0.0, 0.0, 0.0);
     }
 
@@ -37,19 +37,6 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     let unit_direction = Vec3::unit_vector(&r.direction());
     let t = (unit_direction.y + 1.0) * 0.5;
     return Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t;
-}
-
-fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.origin() - *center;
-    let a = r.direction().length_squared();
-    let half_b: f64 = Vec3::dot(&oc, &r.direction());
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    } else {
-        return (-half_b - f64::sqrt(discriminant)) / a;
-    }
 }
 
 fn main() {
