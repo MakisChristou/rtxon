@@ -18,6 +18,7 @@ impl Material for Lambertian {
         attenuation: &mut Color,
         scattered: &mut Ray,
     ) -> bool {
+        println!("Scatter Lambertian");
         let mut scatter_direction = rec.normal + Vec3::random_in_unit_vector();
 
         // Catch degenerate scatter direction

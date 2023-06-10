@@ -87,7 +87,7 @@ impl Vec3 {
 
     pub fn near_zero(&self) -> bool {
         // Return true if the vector is close to zero in all dimentions
-        let s = 1e-18;
+        let s = 1e-8;
         return (f64::abs(self.x) < s) && (f64::abs(self.y) < s) && (f64::abs(self.z) < s);
     }
 

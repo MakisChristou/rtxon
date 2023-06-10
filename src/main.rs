@@ -3,26 +3,27 @@ mod hitable;
 mod hitable_list;
 mod lambertian;
 mod material;
+mod metal;
 mod ray;
 mod sphere;
 mod utils;
 mod vec3;
 
-use std::sync::Arc;
-
-use camera::Camera;
-use hitable::HitRecord;
-use ray::Ray;
-use vec3::Vec3;
-
+use crate::camera::Camera;
+use crate::hitable::HitRecord;
 use crate::hitable::Hitable;
 use crate::hitable_list::HitableList;
 use crate::lambertian::Lambertian;
+use crate::metal::Metal;
+use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
 use crate::utils::infinity;
 use crate::utils::random_double;
 use crate::utils::write_color;
+use crate::vec3::Vec3;
+
+use std::sync::Arc;
 
 fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     let mut rec = HitRecord::default();
@@ -33,9 +34,17 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
 
     // If hit something
     if world.hit(r, 0.001, infinity, &mut rec) {
-        // Bounce
-        let target = rec.p + rec.normal + Vec3::random_in_hemisphere(&rec.normal);
-        return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
+        let mut scattered = Ray::default();
+        let mut attenuation = Color::default();
+
+        if rec
+            .mat_ptr
+            .scatter(r, &rec, &mut attenuation, &mut scattered)
+        {
+            return ray_color(&scattered, world, depth - 1) * attenuation;
+        } else {
+            return Color::new(0.0, 0.0, 0.0);
+        }
     }
 
     // If hit nothing return background
@@ -47,7 +56,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 1280;
+    let image_width: usize = 640;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
     let samples_per_pixel = 100;
     let max_depth = 50;
@@ -59,16 +68,23 @@ fn main() {
 
     // World
     let mut world = HitableList::new();
-    world.add(Sphere::new(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5,
-        Arc::new(Lambertian::new(Color::new(255.0, 0.0, 0.0))),
-    ));
+
+    let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center = Arc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left = Arc::new(Metal::new(Color::new(0.8, 0.8, 0.8)));
+    let material_right = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2)));
+
     world.add(Sphere::new(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
-        Arc::new(Lambertian::new(Color::new(125.0, 125.0, 125.0))),
+        material_ground,
     ));
+
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+
+    world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
 
     // Camera
     let cam = Camera::new();

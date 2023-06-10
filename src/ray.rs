@@ -10,6 +10,10 @@ impl Ray {
         Ray { origin, direction }
     }
 
+    pub fn default() -> Self {
+        Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0))
+    }
+
     pub fn direction(&self) -> Vec3 {
         self.direction
     }
