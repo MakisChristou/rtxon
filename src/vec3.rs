@@ -49,14 +49,20 @@ impl Vec3 {
 
     pub fn random(range: Option<(f64, f64)>) -> Vec3 {
         match range {
-            Some(range) => Vec3::new(random_double(Some(range)), random_double(Some(range)), random_double(Some(range))),
-            None => {
-                Vec3::new(random_double(None), random_double(None), random_double(None))
-            }
-        }   
+            Some(range) => Vec3::new(
+                random_double(Some(range)),
+                random_double(Some(range)),
+                random_double(Some(range)),
+            ),
+            None => Vec3::new(
+                random_double(None),
+                random_double(None),
+                random_double(None),
+            ),
+        }
     }
 
-    pub fn random_in_unit_sphere() -> Vec3{
+    pub fn random_in_unit_sphere() -> Vec3 {
         loop {
             let p = Vec3::random(Some((-1.0, 1.0)));
             if p.length_squared() >= 1.0 {
@@ -66,10 +72,18 @@ impl Vec3 {
         }
     }
 
-    pub fn random_in_unit_vector() -> Vec3{
+    pub fn random_in_unit_vector() -> Vec3 {
         return Vec3::unit_vector(&Vec3::random_in_unit_sphere());
     }
 
+    pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
+        let in_unit_sphere = Vec3::random_in_unit_sphere();
+        if Vec3::dot(&in_unit_sphere, normal) > 0.0 {
+            return in_unit_sphere;
+        } else {
+            return -in_unit_sphere;
+        }
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {

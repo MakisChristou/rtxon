@@ -29,7 +29,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     // If hit something
     if world.hit(r, 0.001, infinity, &mut rec) {
         // Bounce
-        let target = rec.p + rec.normal + Vec3::random_in_unit_vector();
+        let target = rec.p + rec.normal + Vec3::random_in_hemisphere(&rec.normal);
         return ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1) * 0.5;
     }
 
@@ -42,7 +42,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 1920;
+    let image_width: usize = 1280;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
     let samples_per_pixel = 100;
     let max_depth = 50;
@@ -64,7 +64,6 @@ fn main() {
     println!("P3\n{} {}\n255", image_width, image_height);
 
     for j in (0..image_height).rev() {
-
         eprint!("\rScanlines remaining: {}", j);
 
         for i in 0..image_width {

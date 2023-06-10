@@ -31,9 +31,8 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 pub fn random_double(range: Option<(f64, f64)>) -> f64 {
     match range {
         Some(range) => rand::thread_rng().gen_range(range.0..range.1),
-        None => rand::thread_rng().gen_range(0.0..1.0)
+        None => rand::thread_rng().gen_range(0.0..1.0),
     }
-    
 }
 
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
