@@ -4,11 +4,16 @@ use crate::{hitable::HitRecord, material::Material, ray::Ray, utils::color::Colo
 
 pub struct Metal {
     albedo: Color,
+    fuzz: f64,
 }
 
 impl Metal {
-    pub fn new(albedo: Color) -> Self {
-        Metal { albedo }
+    pub fn new(albedo: Color, fuzz: f64) -> Self {
+        if fuzz < 1.0 {
+            return Metal { albedo, fuzz };
+        } else {
+            return Metal { albedo, fuzz: 1.0 };
+        }
     }
 }
 
@@ -22,7 +27,7 @@ impl Material for Metal {
     ) -> bool {
         let reflected = Vec3::reflect(&Vec3::unit_vector(&r_in.direction()), &rec.normal);
 
-        *scattered = Ray::new(rec.p, reflected);
+        *scattered = Ray::new(rec.p, reflected + Vec3::random_in_unit_sphere() * self.fuzz);
         *attenuation = self.albedo;
 
         return Vec3::dot(&scattered.direction(), &rec.normal) > 0.0;
