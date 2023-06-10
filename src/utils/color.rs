@@ -1,6 +1,7 @@
 use std::ops;
 
 // mod vec3;
+use crate::utils::random_double;
 use crate::Vec3;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -20,6 +21,21 @@ impl Color {
             r: 0.0,
             g: 0.0,
             b: 0.0,
+        }
+    }
+
+    pub fn random(range: Option<(f64, f64)>) -> Self {
+        match range {
+            None => Color::new(
+                random_double(None),
+                random_double(None),
+                random_double(None),
+            ),
+            Some(range) => Color::new(
+                random_double(Some(range)),
+                random_double(Some(range)),
+                random_double(Some(range)),
+            ),
         }
     }
 }
