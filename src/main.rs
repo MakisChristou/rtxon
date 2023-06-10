@@ -10,8 +10,6 @@ mod sphere;
 mod utils;
 mod vec3;
 
-use rand::random;
-
 use crate::camera::Camera;
 use crate::dielectric::Dielectric;
 use crate::hitable::HitRecord;
@@ -22,13 +20,30 @@ use crate::metal::Metal;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
+use crate::utils::get_corrected_color;
 use crate::utils::infinity;
-use crate::utils::pi;
 use crate::utils::random_double;
-use crate::utils::write_color;
 use crate::vec3::Vec3;
 
+use image::ImageError;
 use std::sync::Arc;
+
+fn save_image(
+    pixel_colours: &Vec<Color>,
+    width: usize,
+    height: usize,
+    file_path: &str,
+) -> Result<(), ImageError> {
+    let mut imgbuf = image::ImageBuffer::new(width as u32, height as u32);
+
+    // Iterate over the coordinates and pixels of the image
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        let c = pixel_colours[(height - 1 - y as usize) * width + x as usize]; // Flip the y-axis here
+        *pixel = image::Rgb([c.r as u8, c.g as u8, c.b as u8]);
+    }
+
+    imgbuf.save(file_path)
+}
 
 fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     let mut rec = HitRecord::default();
@@ -116,15 +131,15 @@ fn random_scene() -> HitableList {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 640;
+    let image_width: usize = 1920;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
     let samples_per_pixel = 100;
     let max_depth = 50;
 
     // World
     let world = random_scene();
-    // Camera
 
+    // Camera
     let look_from = Vec3::new(13.0, 2.0, 3.0);
     let look_at = Vec3::new(0.0, 0.0, 0.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
@@ -141,8 +156,8 @@ fn main() {
         dist_to_focus,
     );
 
-    // Render
-    println!("P3\n{} {}\n255", image_width, image_height);
+    // Image Buffer
+    let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];
 
     for j in (0..image_height).rev() {
         eprint!("\rScanlines remaining: {}", j);
@@ -157,7 +172,11 @@ fn main() {
                 pixel_color = pixel_color + ray_color(&r, &world, max_depth);
             }
 
-            write_color(pixel_color, samples_per_pixel as f64);
+            pixel_colours[j * image_width + i] =
+                get_corrected_color(pixel_color, samples_per_pixel as f64);
         }
     }
+
+    // Save actual PNG
+    save_image(&pixel_colours, image_width, image_height, "output.png");
 }

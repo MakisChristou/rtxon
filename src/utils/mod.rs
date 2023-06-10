@@ -23,6 +23,23 @@ pub fn write_color(c: Color, samples_per_pixel: f64) {
     println!("{} {} {}", ir, ig, ib);
 }
 
+pub fn get_corrected_color(c: Color, samples_per_pixel: f64) -> Color {
+    let mut r = c.r;
+    let mut g = c.g;
+    let mut b = c.b;
+
+    let scale = 1.0 / samples_per_pixel;
+    r = f64::sqrt(scale * r);
+    g = f64::sqrt(scale * g);
+    b = f64::sqrt(scale * b);
+
+    let ir = (256.0 * clamp(r, 0.0, 0.999)) as f64;
+    let ig = (256.0 * clamp(g, 0.0, 0.999)) as f64;
+    let ib = (256.0 * clamp(b, 0.0, 0.999)) as f64;
+
+    Color::new(ir, ig, ib)
+}
+
 pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * pi / 180.0
 }
