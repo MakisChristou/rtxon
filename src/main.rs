@@ -26,6 +26,10 @@ use crate::utils::random_double;
 use crate::vec3::Vec3;
 
 use image::ImageError;
+use indicatif::ProgressBar;
+use indicatif::ProgressState;
+use indicatif::ProgressStyle;
+use std::fmt::Write;
 use std::sync::Arc;
 
 fn save_image(
@@ -133,7 +137,7 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width: usize = 1920;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let samples_per_pixel = 100;
+    let samples_per_pixel = 200;
     let max_depth = 50;
 
     // World
@@ -159,9 +163,18 @@ fn main() {
     // Image Buffer
     let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];
 
-    for j in (0..image_height).rev() {
-        eprint!("\rScanlines remaining: {}", j);
+    // Progress Bar
+    let mut rendered = 0;
+    let total_size = image_height * image_width;
 
+    let pb = ProgressBar::new(total_size as u64);
+    pb.set_style(ProgressStyle::with_template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] ({eta})")
+        .unwrap()
+        .with_key("eta", |state: &ProgressState, w: &mut dyn Write| write!(w, "{:.1}s", state.eta().as_secs_f64()).unwrap())
+        .progress_chars("#>-"));
+
+
+    for j in (0..image_height).rev() {
         for i in 0..image_width {
             let mut pixel_color = Color::new(0.0, 0.0, 0.0);
 
@@ -172,11 +185,15 @@ fn main() {
                 pixel_color = pixel_color + ray_color(&r, &world, max_depth);
             }
 
+            rendered += 1;
+            pb.set_position(rendered);
+
             pixel_colours[j * image_width + i] =
                 get_corrected_color(pixel_color, samples_per_pixel as f64);
         }
     }
 
-    // Save actual PNG
+    pb.finish_with_message("Saving png...");
     save_image(&pixel_colours, image_width, image_height, "output.png");
+
 }
