@@ -90,6 +90,10 @@ impl Vec3 {
         let s = 1e-18;
         return (f64::abs(self.x) < s) && (f64::abs(self.y) < s) && (f64::abs(self.z) < s);
     }
+
+    pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+        return (*v) - (*n) * (2.0 * Vec3::dot(v, n));
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {
