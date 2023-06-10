@@ -21,6 +21,7 @@ use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
 use crate::utils::infinity;
+use crate::utils::pi;
 use crate::utils::random_double;
 use crate::utils::write_color;
 use crate::vec3::Vec3;
@@ -63,13 +64,9 @@ fn main() {
     let samples_per_pixel = 100;
     let max_depth = 50;
 
-    // Camera
-    let viewport_height = 2.0;
-    let viewport_width = aspect_ratio * viewport_height;
-    let focal_length = 1.0;
-
     // World
     let mut world = HitableList::new();
+    let r = f64::cos(pi / 4.0);
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -94,7 +91,13 @@ fn main() {
     world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
 
     // Camera
-    let cam = Camera::new();
+    let cam = Camera::new(
+        Vec3::new(-2.0, 2.0, 1.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        aspect_ratio,
+    );
 
     // Render
     println!("P3\n{} {}\n255", image_width, image_height);
