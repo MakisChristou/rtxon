@@ -57,7 +57,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     }
 
     // If hit something
-    if world.hit(r, 0.001, INFINITY, &mut rec) {
+    if let Some(rec) = world.hit(r, 0.001, INFINITY) {
         let mut scattered = Ray::default();
         let mut attenuation = Color::default();
 
