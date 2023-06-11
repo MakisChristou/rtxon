@@ -57,7 +57,11 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction, time: None };
+        let ray = Ray {
+            origin,
+            direction,
+            time: None,
+        };
         let point_at = ray.at(10.0);
         assert_eq!(
             point_at,
@@ -81,7 +85,11 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction, time: None };
+        let ray = Ray {
+            origin,
+            direction,
+            time: None,
+        };
 
         assert_eq!(ray.origin(), origin);
     }
@@ -98,7 +106,11 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction, time: None };
+        let ray = Ray {
+            origin,
+            direction,
+            time: None,
+        };
 
         assert_eq!(ray.direction(), direction);
     }
