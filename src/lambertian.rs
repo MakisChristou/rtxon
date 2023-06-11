@@ -27,6 +27,6 @@ impl Material for Lambertian {
 
         *scattered = Ray::new(rec.p, scatter_direction);
         *attenuation = self.albedo;
-        return true;
+        true
     }
 }

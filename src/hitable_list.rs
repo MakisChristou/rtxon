@@ -36,6 +36,6 @@ impl Hitable for HitableList {
                 *rec = temp_rec.clone();
             }
         }
-        return hit_anything;
+        hit_anything
     }
 }

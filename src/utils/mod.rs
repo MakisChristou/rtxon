@@ -4,8 +4,8 @@ use crate::utils::color::Color;
 use rand::Rng;
 
 // Static variables
-pub static infinity: f64 = std::f64::INFINITY;
-pub static pi: f64 = std::f64::consts::PI;
+pub static INFINITY: f64 = std::f64::INFINITY;
+pub static PI: f64 = std::f64::consts::PI;
 
 pub fn write_color(c: Color, samples_per_pixel: f64) {
     let mut r = c.r;
@@ -33,15 +33,15 @@ pub fn get_corrected_color(c: Color, samples_per_pixel: f64) -> Color {
     g = f64::sqrt(scale * g);
     b = f64::sqrt(scale * b);
 
-    let ir = (256.0 * clamp(r, 0.0, 0.999)) as f64;
-    let ig = (256.0 * clamp(g, 0.0, 0.999)) as f64;
-    let ib = (256.0 * clamp(b, 0.0, 0.999)) as f64;
+    let ir = 256.0 * clamp(r, 0.0, 0.999);
+    let ig = 256.0 * clamp(g, 0.0, 0.999);
+    let ib = 256.0 * clamp(b, 0.0, 0.999);
 
     Color::new(ir, ig, ib)
 }
 
 pub fn degrees_to_radians(degrees: f64) -> f64 {
-    degrees * pi / 180.0
+    degrees * PI / 180.0
 }
 
 // Random Number Utilities
@@ -59,7 +59,7 @@ pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
     if x > max {
         return max;
     }
-    return x;
+    x
 }
 
 #[cfg(test)]

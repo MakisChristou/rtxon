@@ -55,6 +55,6 @@ impl Hitable for Sphere {
         rec.set_face_normal(r, &outward_normal);
         rec.mat_ptr = Arc::clone(&self.mat_ptr);
 
-        return true;
+        true
     }
 }

@@ -1,5 +1,3 @@
-use std::process;
-
 use crate::{hitable::HitRecord, material::Material, ray::Ray, utils::color::Color, vec3::Vec3};
 
 pub struct Metal {
@@ -10,9 +8,9 @@ pub struct Metal {
 impl Metal {
     pub fn new(albedo: Color, fuzz: f64) -> Self {
         if fuzz < 1.0 {
-            return Metal { albedo, fuzz };
+            Metal { albedo, fuzz }
         } else {
-            return Metal { albedo, fuzz: 1.0 };
+            Metal { albedo, fuzz: 1.0 }
         }
     }
 }
@@ -30,6 +28,6 @@ impl Material for Metal {
         *scattered = Ray::new(rec.p, reflected + Vec3::random_in_unit_sphere() * self.fuzz);
         *attenuation = self.albedo;
 
-        return Vec3::dot(&scattered.direction(), &rec.normal) > 0.0;
+        Vec3::dot(&scattered.direction(), &rec.normal) > 0.0
     }
 }

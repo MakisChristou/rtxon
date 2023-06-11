@@ -21,8 +21,8 @@ use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
 use crate::utils::get_corrected_color;
-use crate::utils::infinity;
 use crate::utils::random_double;
+use crate::utils::INFINITY;
 use crate::vec3::Vec3;
 
 use image::ImageError;
@@ -31,10 +31,9 @@ use indicatif::ProgressState;
 use indicatif::ProgressStyle;
 use std::fmt::Write;
 use std::sync::Arc;
-use utils::pi;
 
 fn save_image(
-    pixel_colours: &Vec<Color>,
+    pixel_colours: &[Color],
     width: usize,
     height: usize,
     file_path: &str,
@@ -58,7 +57,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     }
 
     // If hit something
-    if world.hit(r, 0.001, infinity, &mut rec) {
+    if world.hit(r, 0.001, INFINITY, &mut rec) {
         let mut scattered = Ray::default();
         let mut attenuation = Color::default();
 
@@ -75,7 +74,7 @@ fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
     // If hit nothing return background
     let unit_direction = Vec3::unit_vector(&r.direction());
     let t = (unit_direction.y + 1.0) * 0.5;
-    return Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t;
+    Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
 }
 
 fn random_scene() -> (HitableList, Camera) {
@@ -148,12 +147,11 @@ fn random_scene() -> (HitableList, Camera) {
         dist_to_focus,
     );
 
-    return (world, cam);
+    (world, cam)
 }
 
 fn scene1() -> (HitableList, Camera) {
     let mut world = HitableList::new();
-    let r = f64::cos(pi / 4.0);
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -194,12 +192,11 @@ fn scene1() -> (HitableList, Camera) {
         dist_to_focus,
     );
 
-    return (world, cam);
+    (world, cam)
 }
 
 fn scene2() -> (HitableList, Camera) {
     let mut world = HitableList::new();
-    let r = f64::cos(pi / 4.0);
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -213,11 +210,7 @@ fn scene2() -> (HitableList, Camera) {
     ));
 
     world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
-    world.add(Sphere::new(
-        Vec3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left,
-    ));
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
     world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
 
     let aspect_ratio = 16.0 / 9.0;
@@ -237,12 +230,11 @@ fn scene2() -> (HitableList, Camera) {
         dist_to_focus,
     );
 
-    return (world, cam);
+    (world, cam)
 }
 
 fn scene3() -> (HitableList, Camera) {
     let mut world = HitableList::new();
-    let r = f64::cos(pi / 4.0);
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     let material_center = Arc::new(Lambertian::new(Color::new(1.0, 1.0, 1.0)));
@@ -255,21 +247,9 @@ fn scene3() -> (HitableList, Camera) {
         material_ground.clone(),
     ));
 
-    world.add(Sphere::new(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center,
-    ));
-    world.add(Sphere::new(
-        Vec3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left,
-    ));
-    world.add(Sphere::new(
-        Vec3::new(1.0, 0.0, -1.0),
-        0.5,
-        material_ground,
-    ));
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_ground));
 
     let aspect_ratio = 16.0 / 9.0;
     let look_from = Vec3::new(0.0, 0.5, 1.0);
@@ -288,12 +268,11 @@ fn scene3() -> (HitableList, Camera) {
         dist_to_focus,
     );
 
-    return (world, cam);
+    (world, cam)
 }
 
 fn scene4() -> (HitableList, Camera) {
     let mut world = HitableList::new();
-    let r = f64::cos(pi / 4.0);
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     let material_center = Arc::new(Lambertian::new(Color::new(1.0, 1.0, 1.0)));
@@ -306,21 +285,9 @@ fn scene4() -> (HitableList, Camera) {
         material_ground,
     ));
 
-    world.add(Sphere::new(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center,
-    ));
-    world.add(Sphere::new(
-        Vec3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left,
-    ));
-    world.add(Sphere::new(
-        Vec3::new(1.0, 0.0, -1.0),
-        0.5,
-        material_right,
-    ));
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
 
     let aspect_ratio = 16.0 / 9.0;
     let look_from = Vec3::new(1.0, 0.5, 1.0);
@@ -339,7 +306,7 @@ fn scene4() -> (HitableList, Camera) {
         dist_to_focus,
     );
 
-    return (world, cam);
+    (world, cam)
 }
 
 fn main() {
@@ -351,7 +318,7 @@ fn main() {
     let max_depth = 100;
 
     // World && Camera
-    let (world, cam) = random_scene();
+    let (world, cam) = scene4();
 
     // Image Buffer
     let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];

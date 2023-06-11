@@ -73,33 +73,33 @@ impl Vec3 {
     }
 
     pub fn random_in_unit_vector() -> Vec3 {
-        return Vec3::unit_vector(&Vec3::random_in_unit_sphere());
+        Vec3::unit_vector(&Vec3::random_in_unit_sphere())
     }
 
     pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
         let in_unit_sphere = Vec3::random_in_unit_sphere();
         if Vec3::dot(&in_unit_sphere, normal) > 0.0 {
-            return in_unit_sphere;
+            in_unit_sphere
         } else {
-            return -in_unit_sphere;
+            -in_unit_sphere
         }
     }
 
     pub fn near_zero(&self) -> bool {
         // Return true if the vector is close to zero in all dimentions
         let s = 1e-8;
-        return (f64::abs(self.x) < s) && (f64::abs(self.y) < s) && (f64::abs(self.z) < s);
+        (f64::abs(self.x) < s) && (f64::abs(self.y) < s) && (f64::abs(self.z) < s)
     }
 
     pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
-        return (*v) - (*n) * (2.0 * Vec3::dot(v, n));
+        (*v) - (*n) * (2.0 * Vec3::dot(v, n))
     }
 
     pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
         let cos_theta = f64::min(Vec3::dot(&-(*uv), n), 1.0);
         let r_out_perp = ((*uv) + (*n) * cos_theta) * etai_over_etat;
         let r_out_parallel = (*n) * (-f64::sqrt(f64::abs(1.0 - r_out_perp.length_squared())));
-        return r_out_perp + r_out_parallel;
+        r_out_perp + r_out_parallel
     }
 
     pub fn random_in_unit_disk() -> Vec3 {
