@@ -12,7 +12,6 @@ mod vec3;
 
 use crate::camera::Camera;
 use crate::dielectric::Dielectric;
-use crate::hitable::HitRecord;
 use crate::hitable::Hitable;
 use crate::hitable_list::HitableList;
 use crate::lambertian::Lambertian;
@@ -138,6 +137,7 @@ fn random_scene() -> (HitableList, Camera) {
         aspect_ratio,
         appreture,
         dist_to_focus,
+        None,
     );
 
     (world, cam)
@@ -183,6 +183,7 @@ fn scene1() -> (HitableList, Camera) {
         aspect_ratio,
         appreture,
         dist_to_focus,
+        None
     );
 
     (world, cam)
@@ -221,6 +222,7 @@ fn scene2() -> (HitableList, Camera) {
         aspect_ratio,
         appreture,
         dist_to_focus,
+        None
     );
 
     (world, cam)
@@ -259,6 +261,7 @@ fn scene3() -> (HitableList, Camera) {
         aspect_ratio,
         appreture,
         dist_to_focus,
+        None
     );
 
     (world, cam)
@@ -297,6 +300,7 @@ fn scene4() -> (HitableList, Camera) {
         aspect_ratio,
         appreture,
         dist_to_focus,
+        None
     );
 
     (world, cam)
