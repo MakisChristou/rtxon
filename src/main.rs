@@ -182,7 +182,7 @@ fn scene1() -> (HitableList, Camera) {
     let look_at = Vec3::new(0.0, 0.0, -1.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
     let dist_to_focus = (look_from - look_at).length();
-    let appreture = 2.0;
+    let appreture = 1.0;
 
     let cam = Camera::new(
         look_from,
@@ -216,7 +216,7 @@ fn scene2() -> (HitableList, Camera) {
     world.add(Sphere::new(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        material_left.clone(),
+        material_left,
     ));
     world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
 
@@ -258,17 +258,17 @@ fn scene3() -> (HitableList, Camera) {
     world.add(Sphere::new(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        material_center.clone(),
+        material_center,
     ));
     world.add(Sphere::new(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        material_left.clone(),
+        material_left,
     ));
     world.add(Sphere::new(
         Vec3::new(1.0, 0.0, -1.0),
         0.5,
-        material_ground.clone(),
+        material_ground,
     ));
 
     let aspect_ratio = 16.0 / 9.0;
@@ -303,23 +303,23 @@ fn scene4() -> (HitableList, Camera) {
     world.add(Sphere::new(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
-        material_ground.clone(),
+        material_ground,
     ));
 
     world.add(Sphere::new(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        material_center.clone(),
+        material_center,
     ));
     world.add(Sphere::new(
         Vec3::new(-1.0, 0.0, -1.0),
         0.5,
-        material_left.clone(),
+        material_left,
     ));
     world.add(Sphere::new(
         Vec3::new(1.0, 0.0, -1.0),
         0.5,
-    material_right.clone(),
+        material_right,
     ));
 
     let aspect_ratio = 16.0 / 9.0;
@@ -347,11 +347,11 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width: usize = 640;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let samples_per_pixel = 128*4;
+    let samples_per_pixel = 128 * 4;
     let max_depth = 100;
 
     // World && Camera
-    let (world, cam) = scene2();
+    let (world, cam) = random_scene();
 
     // Image Buffer
     let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];
@@ -392,7 +392,7 @@ fn main() {
     }
 
     match save_image(&pixel_colours, image_width, image_height, "output.png") {
-        Ok(()) => {},
-        Err(e) => panic!("Error saving image {}", e)
+        Ok(()) => {}
+        Err(e) => panic!("Error saving image {}", e),
     }
 }
