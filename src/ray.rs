@@ -3,11 +3,24 @@ use crate::vec3::Vec3;
 pub struct Ray {
     pub origin: Vec3,
     pub direction: Vec3,
+    pub time: f64,
 }
 
 impl Ray {
     pub fn new(origin: Vec3, direction: Vec3) -> Self {
-        Ray { origin, direction }
+        Ray {
+            origin,
+            direction,
+            time: 0.0,
+        }
+    }
+
+    pub fn new_with_time(origin: Vec3, direction: Vec3, time: f64) -> Self {
+        Ray {
+            origin,
+            direction,
+            time,
+        }
     }
 
     pub fn default() -> Self {
@@ -44,7 +57,7 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction };
+        let ray = Ray { origin, direction, time: 0.0 };
         let point_at = ray.at(10.0);
         assert_eq!(
             point_at,
@@ -68,7 +81,7 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction };
+        let ray = Ray { origin, direction, time: 0.0 };
 
         assert_eq!(ray.origin(), origin);
     }
@@ -85,7 +98,7 @@ mod tests {
             y: 1.0,
             z: 1.0,
         };
-        let ray = Ray { origin, direction };
+        let ray = Ray { origin, direction, time: 0.0 };
 
         assert_eq!(ray.direction(), direction);
     }
