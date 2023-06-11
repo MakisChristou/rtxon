@@ -1,4 +1,10 @@
-use crate::{hitable::HitRecord, material::Material, ray::Ray, utils::color::Color, vec3::Vec3};
+use crate::{
+    hitable::HitRecord,
+    material::{Material, ScatterRay},
+    ray::Ray,
+    utils::color::Color,
+    vec3::Vec3,
+};
 
 pub struct Lambertian {
     albedo: Color,
@@ -11,13 +17,7 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(
-        &self,
-        r_in: &Ray,
-        rec: &HitRecord,
-        attenuation: &mut Color,
-        scattered: &mut Ray,
-    ) -> bool {
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterRay> {
         let mut scatter_direction = rec.normal + Vec3::random_in_unit_vector();
 
         // Catch degenerate scatter direction
@@ -25,8 +25,8 @@ impl Material for Lambertian {
             scatter_direction = rec.normal;
         }
 
-        *scattered = Ray::new(rec.p, scatter_direction);
-        *attenuation = self.albedo;
-        true
+        let ray = Ray::new(rec.p, scatter_direction);
+        let attenuation = self.albedo;
+        Some(ScatterRay { ray, attenuation })
     }
 }

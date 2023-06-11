@@ -29,6 +29,7 @@ use image::ImageError;
 use indicatif::ProgressBar;
 use indicatif::ProgressState;
 use indicatif::ProgressStyle;
+use material::ScatterRay;
 use std::fmt::Write;
 use std::sync::Arc;
 
@@ -50,22 +51,14 @@ fn save_image(
 }
 
 fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
-    let mut rec = HitRecord::default();
-
     if depth == 0 {
         return Color::new(0.0, 0.0, 0.0);
     }
 
     // If hit something
     if let Some(rec) = world.hit(r, 0.001, INFINITY) {
-        let mut scattered = Ray::default();
-        let mut attenuation = Color::default();
-
-        if rec
-            .mat_ptr
-            .scatter(r, &rec, &mut attenuation, &mut scattered)
-        {
-            return ray_color(&scattered, world, depth - 1) * attenuation;
+        if let Some(ScatterRay { ray, attenuation }) = rec.mat_ptr.scatter(r, &rec) {
+            return ray_color(&ray, world, depth - 1) * attenuation;
         } else {
             return Color::new(0.0, 0.0, 0.0);
         }
