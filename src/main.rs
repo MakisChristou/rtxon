@@ -282,6 +282,57 @@ fn scene3() -> (HitableList, Camera) {
         look_from,
         look_at,
         vup,
+        70.0,
+        aspect_ratio,
+        appreture,
+        dist_to_focus,
+    );
+
+    return (world, cam);
+}
+
+fn scene4() -> (HitableList, Camera) {
+    let mut world = HitableList::new();
+    let r = f64::cos(pi / 4.0);
+
+    let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    let material_center = Arc::new(Lambertian::new(Color::new(1.0, 1.0, 1.0)));
+    let material_left = Arc::new(Lambertian::new(Color::new(0.2, 0.3, 1.0)));
+    let material_right = Arc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));
+
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground.clone(),
+    ));
+
+    world.add(Sphere::new(
+        Vec3::new(0.0, 0.0, -1.0),
+        0.5,
+        material_center.clone(),
+    ));
+    world.add(Sphere::new(
+        Vec3::new(-1.0, 0.0, -1.0),
+        0.5,
+        material_left.clone(),
+    ));
+    world.add(Sphere::new(
+        Vec3::new(1.0, 0.0, -1.0),
+        0.5,
+    material_right.clone(),
+    ));
+
+    let aspect_ratio = 16.0 / 9.0;
+    let look_from = Vec3::new(1.0, 0.5, 1.0);
+    let look_at = Vec3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (look_from - look_at).length();
+    let appreture = 0.2;
+
+    let cam = Camera::new(
+        look_from,
+        look_at,
+        vup,
         60.0,
         aspect_ratio,
         appreture,
@@ -294,13 +345,13 @@ fn scene3() -> (HitableList, Camera) {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 1920;
+    let image_width: usize = 640;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let samples_per_pixel = 200;
+    let samples_per_pixel = 128*4;
     let max_depth = 100;
 
     // World && Camera
-    let (world, cam) = scene3();
+    let (world, cam) = scene2();
 
     // Image Buffer
     let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];
@@ -340,5 +391,8 @@ fn main() {
         }
     }
 
-    save_image(&pixel_colours, image_width, image_height, "output.png");
+    match save_image(&pixel_colours, image_width, image_height, "output.png") {
+        Ok(()) => {},
+        Err(e) => panic!("Error saving image {}", e)
+    }
 }
