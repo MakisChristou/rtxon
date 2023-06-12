@@ -51,4 +51,26 @@ impl AxisAlignedBoundingBox {
 
         true
     }
+
+    pub fn surrounding_box(
+        box0: AxisAlignedBoundingBox,
+        box1: AxisAlignedBoundingBox,
+    ) -> AxisAlignedBoundingBox {
+        let small = Vec3::new(
+            f64::min(box0.minimum.x, box1.minimum.x),
+            f64::min(box0.minimum.y, box1.minimum.y),
+            f64::min(box0.minimum.z, box1.minimum.z),
+        );
+
+        let big = Vec3::new(
+            f64::min(box0.maximum.x, box1.maximum.x),
+            f64::min(box0.maximum.y, box1.maximum.y),
+            f64::min(box0.maximum.z, box1.maximum.z),
+        );
+
+        AxisAlignedBoundingBox {
+            minimum: small,
+            maximum: big,
+        }
+    }
 }

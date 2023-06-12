@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
+    aabb::AxisAlignedBoundingBox,
     hitable::{HitRecord, Hitable},
     material::Material,
     ray::Ray,
@@ -76,6 +77,16 @@ impl Hitable for MovingSphere {
     }
 
     fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::AxisAlignedBoundingBox> {
-        None
+        let box0 = AxisAlignedBoundingBox::new(
+            self.center(time.0) - Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time.0) + Vec3::new(self.radius, self.radius, self.radius),
+        );
+
+        let box1 = AxisAlignedBoundingBox::new(
+            self.center(time.1) - Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time.1) + Vec3::new(self.radius, self.radius, self.radius),
+        );
+
+        Some(AxisAlignedBoundingBox::surrounding_box(box0, box1))
     }
 }
