@@ -1,6 +1,8 @@
 use crate::{
+    aabb::AxisAlignedBoundingBox,
     hitable::{HitRecord, Hitable},
     ray::Ray,
+    vec3::Vec3,
 };
 
 pub struct HitableList {
@@ -40,7 +42,25 @@ impl Hitable for HitableList {
         rec
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::AxisAlignedBoundingBox> {
-        None
+    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+        if self.objects.is_empty() {
+            return None;
+        }
+
+        let mut output_box =
+            AxisAlignedBoundingBox::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0));
+        let mut first_box = true;
+
+        for object in &self.objects {
+            if let Some(temp_box) = object.bounding_box(time) {
+                output_box = if first_box {
+                    temp_box
+                } else {
+                    AxisAlignedBoundingBox::surrounding_box(output_box, temp_box)
+                };
+                first_box = false
+            }
+        }
+        Some(output_box)
     }
 }
