@@ -26,6 +26,15 @@ impl Vec3 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
+    pub fn at(&self, index: usize) -> Option<f64> {
+        match index {
+            0 => Some(self.x),
+            1 => Some(self.y),
+            2 => Some(self.z),
+            _ => None,
+        }
+    }
+
     pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
         v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
     }
@@ -320,5 +329,20 @@ mod tests {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v3 = -v1;
         assert_eq!(v3, Vec3::new(-1.0, -2.0, -3.0));
+    }
+
+    #[test]
+    fn should_be_indexable() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        let values = vec![1.0, 2.0, 3.0];
+        for i in 0..3 {
+            assert_eq!(Some(values[i]), v.at(i));
+        }
+    }
+
+    #[test]
+    fn should_not_be_indexable_when_out_of_bounds() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(None, v.at(3));
     }
 }
