@@ -30,4 +30,25 @@ impl AxisAlignedBoundingBox {
         }
         true
     }
+
+    pub fn andrew_kensler_hit(&self, r: &Ray, t_min: f64, t_max: f64) -> bool {
+        for a in 0..3 {
+            let inv_d = 1.0 / r.direction.at(a).unwrap();
+            let mut t0 = self.minimum.at(a).unwrap() - r.origin.at(a).unwrap() * inv_d;
+            let mut t1 = self.maximum.at(a).unwrap() - r.origin.at(a).unwrap() * inv_d;
+
+            if inv_d < 0.0 {
+                std::mem::swap(&mut t0, &mut t1);
+            }
+
+            let t_min = if t0 > t_min { t0 } else { t_min };
+            let t_max = if t1 < t_max { t1 } else { t_max };
+
+            if t_max <= t_min {
+                return false;
+            }
+        }
+
+        true
+    }
 }
