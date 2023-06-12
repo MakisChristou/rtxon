@@ -1,4 +1,5 @@
 mod camera;
+mod config;
 mod dielectric;
 mod hitable;
 mod hitable_list;
@@ -7,69 +8,26 @@ mod material;
 mod metal;
 mod moving_sphere;
 mod ray;
+mod renderer;
 mod sphere;
 mod utils;
 mod vec3;
 
 use crate::camera::Camera;
 use crate::dielectric::Dielectric;
-use crate::hitable::Hitable;
 use crate::hitable_list::HitableList;
 use crate::lambertian::Lambertian;
 use crate::metal::Metal;
-use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
-use crate::utils::get_corrected_color;
 use crate::utils::random_double;
-use crate::utils::INFINITY;
 use crate::vec3::Vec3;
 
-use image::ImageError;
-use indicatif::ProgressBar;
-use indicatif::ProgressState;
-use indicatif::ProgressStyle;
-use material::ScatterRay;
+use config::Config;
+use indicatif::{ProgressBar, ProgressState, ProgressStyle};
 use moving_sphere::MovingSphere;
-use std::fmt::Write;
-use std::sync::Arc;
-
-fn save_image(
-    pixel_colours: &[Color],
-    width: usize,
-    height: usize,
-    file_path: &str,
-) -> Result<(), ImageError> {
-    let mut imgbuf = image::ImageBuffer::new(width as u32, height as u32);
-
-    // Iterate over the coordinates and pixels of the image
-    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        let c = pixel_colours[(height - 1 - y as usize) * width + x as usize]; // Flip the y-axis here
-        *pixel = image::Rgb([c.r as u8, c.g as u8, c.b as u8]);
-    }
-
-    imgbuf.save(file_path)
-}
-
-fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
-    if depth == 0 {
-        return Color::new(0.0, 0.0, 0.0);
-    }
-
-    // If hit something
-    if let Some(rec) = world.hit(r, 0.001, INFINITY) {
-        if let Some(ScatterRay { ray, attenuation }) = rec.mat_ptr.scatter(r, &rec) {
-            return ray_color(&ray, world, depth - 1) * attenuation;
-        } else {
-            return Color::new(0.0, 0.0, 0.0);
-        }
-    }
-
-    // If hit nothing return background
-    let unit_direction = Vec3::unit_vector(&r.direction());
-    let t = (unit_direction.y + 1.0) * 0.5;
-    Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
-}
+use renderer::Renderer;
+use std::{fmt::Write, sync::Arc};
 
 fn random_scene() -> (HitableList, Camera) {
     let ground_material = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -391,22 +349,17 @@ fn scene4() -> (HitableList, Camera) {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 640;
-    let image_height = (image_width as f64 / aspect_ratio) as usize;
+    let image_width: usize = 1920;
     let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 
-    // World && Camera
-    let (world, cam) = random_moving_scene();
+    let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
-    // Image Buffer
-    let mut pixel_colours: Vec<Color> = vec![Color::new(0.0, 0.0, 0.0); image_height * image_width];
+    // Scene
+    let (world, cam) = scene2();
 
     // Progress Bar
-    let mut rendered = 0;
-    let total_size = image_height * image_width;
-
-    let pb = ProgressBar::new(total_size as u64);
+    let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
     pb.set_style(
         ProgressStyle::with_template(
             "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] ({eta})",
@@ -418,27 +371,12 @@ fn main() {
         .progress_chars("#>-"),
     );
 
-    for j in (0..image_height).rev() {
-        for i in 0..image_width {
-            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+    let mut renderer = Renderer::new(config, world, cam, Some(pb));
 
-            for _s in 0..samples_per_pixel {
-                let u = (i as f64 + random_double(None)) / (image_width - 1) as f64;
-                let v = (j as f64 + random_double(None)) / (image_height - 1) as f64;
-                let r = cam.get_ray(u, v);
-                pixel_color = pixel_color + ray_color(&r, &world, max_depth);
-            }
-
-            rendered += 1;
-            pb.set_position(rendered);
-
-            pixel_colours[j * image_width + i] =
-                get_corrected_color(pixel_color, samples_per_pixel as f64);
+    match renderer.render_current_frame() {
+        Ok(()) => {
+            println!("Frame saved succesfully")
         }
-    }
-
-    match save_image(&pixel_colours, image_width, image_height, "output.png") {
-        Ok(()) => {}
-        Err(e) => panic!("Error saving image {}", e),
+        Err(e) => panic!("Cannot save frame {}", e),
     }
 }
