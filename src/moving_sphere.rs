@@ -74,4 +74,8 @@ impl Hitable for MovingSphere {
             panic!("Ray hitting MovingSphere should always have time value");
         }
     }
+
+    fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::AxisAlignedBoundingBox> {
+        None
+    }
 }

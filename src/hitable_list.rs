@@ -39,4 +39,8 @@ impl Hitable for HitableList {
         }
         rec
     }
+
+    fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::AxisAlignedBoundingBox> {
+        None
+    }
 }

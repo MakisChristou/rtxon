@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
 use crate::{
-    lambertian::Lambertian, material::Material, ray::Ray, utils::color::Color, vec3::Vec3,
+    aabb::AxisAlignedBoundingBox, lambertian::Lambertian, material::Material, ray::Ray,
+    utils::color::Color, vec3::Vec3,
 };
 
 #[derive(Clone)]
@@ -36,4 +37,5 @@ impl HitRecord {
 
 pub trait Hitable {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox>;
 }

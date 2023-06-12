@@ -1,6 +1,6 @@
 use crate::{ray::Ray, vec3::Vec3};
 
-struct AxisAlignedBoundingBox {
+pub struct AxisAlignedBoundingBox {
     minimum: Vec3,
     maximum: Vec3,
 }
