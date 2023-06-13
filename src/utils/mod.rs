@@ -40,6 +40,11 @@ pub fn get_corrected_color(c: Color, samples_per_pixel: f64) -> Color {
     Color::new(ir, ig, ib)
 }
 
+pub fn random_int(start: usize, end: usize) -> usize {
+    let mut rng = rand::thread_rng();
+    rng.gen_range(start..end)
+}
+
 pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
 }
@@ -64,11 +69,17 @@ pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use super::random_double;
+    use super::{random_double, random_int};
 
     #[test]
     fn should_return_correct_default_random_numnber() {
         let r = random_double(None);
         assert!(r < 1.0 && r > 0.0);
+    }
+
+    #[test]
+    fn should_choose_only_3_axis() {
+        let r = random_int(0, 3);
+        assert!(r <= 2 && r > 0);
     }
 }
