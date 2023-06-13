@@ -1,16 +1,18 @@
-use crate::{ray::Ray, vec3::Vec3};
+use crate::{
+    hitable::{HitRecord, Hitable},
+    ray::Ray,
+    vec3::Vec3,
+};
 
+#[derive(Copy, Clone)]
 pub struct AxisAlignedBoundingBox {
-    minimum: Vec3,
-    maximum: Vec3,
+    pub minimum: Vec3,
+    pub maximum: Vec3,
 }
 
-impl AxisAlignedBoundingBox {
-    pub fn new(minimum: Vec3, maximum: Vec3) -> Self {
-        AxisAlignedBoundingBox { minimum, maximum }
-    }
-
-    pub fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> bool {
+impl Hitable for AxisAlignedBoundingBox {
+    // We don't care about returning actual values in the hit record just that we hit SOME record
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         for a in 0..3 {
             let t0 = f64::min(
                 self.minimum.at(a).unwrap() - r.origin.at(a).unwrap() / r.direction.at(a).unwrap(),
@@ -25,10 +27,20 @@ impl AxisAlignedBoundingBox {
             let t_max = f64::min(t1, t_max);
 
             if t_max <= t_min {
-                return false;
+                return None;
             }
         }
-        true
+        Some(HitRecord::default())
+    }
+
+    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+        todo!()
+    }
+}
+
+impl AxisAlignedBoundingBox {
+    pub fn new(minimum: Vec3, maximum: Vec3) -> Self {
+        AxisAlignedBoundingBox { minimum, maximum }
     }
 
     pub fn andrew_kensler_hit(&self, r: &Ray, t_min: f64, t_max: f64) -> bool {

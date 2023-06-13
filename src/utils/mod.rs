@@ -80,6 +80,6 @@ mod tests {
     #[test]
     fn should_choose_only_3_axis() {
         let r = random_int(0, 3);
-        assert!(r <= 2 && r > 0);
+        assert!(r <= 2 && r >= 0);
     }
 }
