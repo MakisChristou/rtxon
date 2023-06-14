@@ -1,6 +1,7 @@
 mod aabb;
 mod bhv;
 mod camera;
+mod checker_texture;
 mod config;
 mod dielectric;
 mod hitable;
@@ -26,6 +27,7 @@ use crate::utils::color::Color;
 use crate::utils::random_double;
 use crate::vec3::Vec3;
 
+use checker_texture::CheckerTexture;
 use config::Config;
 use indicatif::{ProgressBar, ProgressState, ProgressStyle};
 use moving_sphere::MovingSphere;
@@ -235,7 +237,12 @@ fn scene1() -> (HitableList, Camera) {
 fn scene2() -> (HitableList, Camera) {
     let mut world = HitableList::new();
 
-    let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    let checker_texture = Arc::new(CheckerTexture::new(
+        Color::new(0.0, 0.0, 0.0),
+        Color::new(1.0, 1.0, 1.0),
+    ));
+
+    let material_ground = Arc::new(Lambertian::new_from_texture(checker_texture));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Arc::new(Dielectric::new(1.5));
     let material_right = Arc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));

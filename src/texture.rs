@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::{utils::color::Color, vec3::Vec3};
 
 pub trait Texture {

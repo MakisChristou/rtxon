@@ -20,6 +20,10 @@ impl Lambertian {
             albedo: Arc::new(solid_color),
         }
     }
+
+    pub fn new_from_texture(texture: Arc<dyn Texture>) -> Self {
+        Lambertian { albedo: texture }
+    }
 }
 
 impl Material for Lambertian {
