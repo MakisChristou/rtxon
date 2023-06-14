@@ -61,6 +61,7 @@ impl Hitable for Sphere {
         rec.p = r.at(rec.t);
 
         let outward_normal = (rec.p - self.center) / self.radius;
+        (rec.u, rec.v) = Self::get_sphere_uv(&outward_normal);
         rec.set_face_normal(r, &outward_normal);
         rec.mat_ptr = Arc::clone(&self.mat_ptr);
 

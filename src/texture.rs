@@ -1,7 +1,7 @@
 use crate::{utils::color::Color, vec3::Vec3};
 
 pub trait Texture {
-    fn color_value(&self, u: f64, v: f64, p: &Vec3) -> Color;
+    fn value(&self, u: f64, v: f64, p: &Vec3) -> Color;
 }
 
 pub struct SolidColor {
@@ -15,7 +15,7 @@ impl SolidColor {
 }
 
 impl Texture for SolidColor {
-    fn color_value(&self, u: f64, v: f64, p: &Vec3) -> Color {
+    fn value(&self, u: f64, v: f64, p: &Vec3) -> Color {
         self.color_value
     }
 }
