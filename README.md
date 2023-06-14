@@ -16,6 +16,9 @@ cargo run --release
 ```
 
 ## Renders
+### 1280x720, aa = 1024, depth = 100, f = 0.05, ~10min (M2 Macbook Pro)
+<img src="images/render6.png" alt="Scene 1" width="650">
+
 ### 640x360, aa = 512, depth = 100, f = 0.05, ~44s (M2 Macbook Pro)
 ![Scene 1](images/render1.png)
 
