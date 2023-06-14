@@ -12,6 +12,7 @@ mod metal;
 mod moving_sphere;
 mod ray;
 mod renderer;
+mod solid_color;
 mod sphere;
 mod texture;
 mod utils;
