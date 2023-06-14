@@ -5,6 +5,7 @@ use crate::{
     hitable::{HitRecord, Hitable},
     material::Material,
     ray::Ray,
+    utils::PI,
     vec3::Vec3,
 };
 
@@ -21,6 +22,12 @@ impl Sphere {
             radius,
             mat_ptr,
         }
+    }
+
+    pub fn get_sphere_uv(p: &Vec3) -> (f64, f64) {
+        let theta = f64::acos(-p.y);
+        let phi = f64::atan2(-p.z, p.x) + PI;
+        (phi / (2.0 * PI), theta / PI)
     }
 }
 
