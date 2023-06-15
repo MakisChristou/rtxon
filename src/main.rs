@@ -12,6 +12,7 @@ mod material;
 mod metal;
 mod moving_sphere;
 mod ray;
+mod rectangle;
 mod renderer;
 mod solid_color;
 mod sphere;
@@ -31,8 +32,10 @@ use crate::vec3::Vec3;
 
 use checker_texture::CheckerTexture;
 use config::Config;
+use diffuse_light::DiffuseLight;
 use indicatif::{ProgressBar, ProgressState, ProgressStyle};
 use moving_sphere::MovingSphere;
+use rectangle::Rectangle;
 use renderer::Renderer;
 use std::{fmt::Write, sync::Arc};
 
@@ -234,6 +237,55 @@ fn checker_scene() -> (HitableList, Camera) {
     (world, cam)
 }
 
+fn checker_emmisive_material_scene() -> (HitableList, Camera) {
+    let mut world = HitableList::new();
+
+    let checker_texture = Arc::new(CheckerTexture::new(
+        Color::new(0.0, 0.0, 0.0),
+        Color::new(1.0, 1.0, 1.0),
+    ));
+
+    let diffuse_light = Arc::new(DiffuseLight::new(Color::new(10.0, 10.0, 10.0)));
+
+    let material_ground = Arc::new(Lambertian::new_from_texture(checker_texture));
+    let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
+    let material_left = Arc::new(Dielectric::new(1.5));
+    let material_right = Arc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));
+
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground,
+    ));
+
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
+
+    // Add emmisive sphere
+    world.add(Sphere::new(Vec3::new(2.0, 2.0, -1.0), 0.5, diffuse_light));
+
+    let aspect_ratio = 16.0 / 9.0;
+    let look_from = Vec3::new(0.0, 0.5, 1.0);
+    let look_at = Vec3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (look_from - look_at).length();
+    let appreture = 0.05;
+
+    let cam = Camera::new(
+        look_from,
+        look_at,
+        vup,
+        60.0,
+        aspect_ratio,
+        appreture,
+        dist_to_focus,
+        None,
+    );
+
+    (world, cam)
+}
+
 fn scene1() -> (HitableList, Camera) {
     let mut world = HitableList::new();
 
@@ -397,6 +449,49 @@ fn scene4() -> (HitableList, Camera) {
     (world, cam)
 }
 
+fn rectangular_light_scene() -> (HitableList, Camera) {
+    let mut world = HitableList::new();
+
+    let material_ground = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    let material_center = Arc::new(Lambertian::new(Color::new(1.0, 1.0, 1.0)));
+    let material_left = Arc::new(Lambertian::new(Color::new(0.2, 0.3, 1.0)));
+    let material_right = Arc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));
+
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground,
+    ));
+
+    world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right));
+
+    // Add emmisive box
+    let diffuse_light = Arc::new(DiffuseLight::new(Color::new(4.0, 4.0, 4.0)));
+    world.add(Rectangle::new((3.0, 5.0), (1.0, 3.0), -2.0, diffuse_light));
+
+    let aspect_ratio = 16.0 / 9.0;
+    let look_from = Vec3::new(1.0, 0.5, 1.0);
+    let look_at = Vec3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (look_from - look_at).length();
+    let appreture = 0.2;
+
+    let cam = Camera::new(
+        look_from,
+        look_at,
+        vup,
+        60.0,
+        aspect_ratio,
+        appreture,
+        dist_to_focus,
+        None,
+    );
+
+    (world, cam)
+}
+
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
@@ -407,7 +502,7 @@ fn main() {
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
     // Scene
-    let (world, cam) = checker_scene();
+    let (world, cam) = checker_emmisive_material_scene();
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);

@@ -10,7 +10,7 @@ use crate::{
     vec3::Vec3,
 };
 
-struct DiffuseLight {
+pub struct DiffuseLight {
     pub emit: Arc<dyn Texture>,
 }
 
