@@ -49,19 +49,23 @@ impl Renderer {
         imgbuf.save(file_path)
     }
 
-    fn ray_color(r: &Ray, world: &dyn Hitable, depth: usize) -> Color {
+    fn ray_color(r: &Ray, background: &Color, world: &dyn Hitable, depth: usize) -> Color {
         if depth == 0 {
-            return Color::new(0.0, 0.0, 0.0);
+            return *background;
         }
 
         // If hit something
         if let Some(rec) = world.hit(r, 0.001, INFINITY) {
+            let mut emmited = rec.mat_ptr.emitted(rec.u, rec.v, &rec.p);
+
             if let Some(ScatterRay { ray, attenuation }) = rec.mat_ptr.scatter(r, &rec) {
-                return Self::ray_color(&ray, world, depth - 1) * attenuation;
+                return Self::ray_color(&ray, background, world, depth - 1) * attenuation + emmited;
             } else {
-                return Color::new(0.0, 0.0, 0.0);
+                return emmited;
             }
         }
+
+        return Color::new(0.0, 0.0, 0.0);
 
         // If hit nothing return background
         let unit_direction = Vec3::unit_vector(&r.direction());
@@ -72,6 +76,7 @@ impl Renderer {
     pub fn render_current_frame(&mut self) -> Result<(), ImageError> {
         // For updating the progress bar
         let mut rendered = 0;
+        let background = Color::new(0.0, 0.0, 0.0);
 
         for j in (0..self.config.image_height).rev() {
             for i in 0..self.config.image_width {
@@ -82,8 +87,8 @@ impl Renderer {
                     let v =
                         (j as f64 + random_double(None)) / (self.config.image_height - 1) as f64;
                     let r = self.cam.get_ray(u, v);
-                    pixel_color =
-                        pixel_color + Self::ray_color(&r, &self.world, self.config.max_depth);
+                    pixel_color = pixel_color
+                        + Self::ray_color(&r, &background, &self.world, self.config.max_depth);
                 }
 
                 rendered += 1;

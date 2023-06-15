@@ -4,6 +4,7 @@ mod camera;
 mod checker_texture;
 mod config;
 mod dielectric;
+mod diffuse_light;
 mod hitable;
 mod hitable_list;
 mod lambertian;
@@ -400,7 +401,7 @@ fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
     let image_width: usize = 640;
-    let samples_per_pixel = 128 * 8;
+    let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
