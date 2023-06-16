@@ -501,7 +501,7 @@ fn rectangular_light_scene() -> (HitableList, Camera) {
     (world, cam)
 }
 
-fn empty_cornell_box_scene() -> (HitableList, Camera) {
+fn cornell_box_scene() -> (HitableList, Camera) {
     let mut world = HitableList::new();
 
     let glass = Arc::new(Dielectric::new(1.5));
@@ -540,7 +540,7 @@ fn empty_cornell_box_scene() -> (HitableList, Camera) {
     ));
 
     // Instances
-    world.add(Sphere::new(Vec3::new(350.0, 100.0, 65.0), 100.0, glass));
+    world.add(Sphere::new(Vec3::new(350.0, 100.0, 165.0), 100.0, glass));
     world.add(Sphere::new(Vec3::new(150.0, 100.0, 265.0), 100.0, metal));
 
     let aspect_ratio = 1.0;
@@ -554,7 +554,7 @@ fn empty_cornell_box_scene() -> (HitableList, Camera) {
         look_from,
         look_at,
         vup,
-        40.0,
+        35.0,
         aspect_ratio,
         appreture,
         dist_to_focus,
@@ -568,13 +568,13 @@ fn main() {
     // Image
     let aspect_ratio = 1.0;
     let image_width: usize = 640;
-    let samples_per_pixel = 128 * 1000;
+    let samples_per_pixel = 128 * 500;
     let max_depth = 100;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
     // Scene
-    let (world, cam) = empty_cornell_box_scene();
+    let (world, cam) = cornell_box_scene();
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
