@@ -504,11 +504,13 @@ fn rectangular_light_scene() -> (HitableList, Camera) {
 fn empty_cornell_box_scene() -> (HitableList, Camera) {
     let mut world = HitableList::new();
 
+    let glass = Arc::new(Dielectric::new(1.5));
     let red = Arc::new(Lambertian::new(Color::new(0.65, 0.05, 0.05)));
     let white = Arc::new(Lambertian::new(Color::new(0.73, 0.73, 0.73)));
     let green = Arc::new(Lambertian::new(Color::new(0.12, 0.45, 0.15)));
     let light = Arc::new(DiffuseLight::new(Color::new(15.0, 15.0, 15.0)));
 
+    // Empty Cornell Box
     world.add(YZRectangle::new((0.0, 555.0), (0.0, 555.0), 555.0, green));
     world.add(YZRectangle::new((0.0, 555.0), (0.0, 555.0), 0.0, red));
     world.add(XZRectangle::new(
@@ -529,9 +531,17 @@ fn empty_cornell_box_scene() -> (HitableList, Camera) {
         555.0,
         white.clone(),
     ));
-    world.add(XYRectangle::new((0.0, 555.0), (0.0, 555.0), 555.0, white));
+    world.add(XYRectangle::new(
+        (0.0, 555.0),
+        (0.0, 555.0),
+        555.0,
+        white.clone(),
+    ));
 
-    let aspect_ratio = 16.0 / 9.0;
+    // Instances
+    // world.add(Sphere::new(Vec3::new(50.0, 100.0, 65.0), 100.0, glass));
+
+    let aspect_ratio = 1.0;
     let look_from = Vec3::new(278.0, 278.0, -800.0);
     let look_at = Vec3::new(278.0, 278.0, 0.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
@@ -554,8 +564,8 @@ fn empty_cornell_box_scene() -> (HitableList, Camera) {
 
 fn main() {
     // Image
-    let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 640;
+    let aspect_ratio = 1.0;
+    let image_width: usize = 320;
     let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 

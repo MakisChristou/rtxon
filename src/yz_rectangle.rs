@@ -38,7 +38,7 @@ impl Hitable for YZRectangle {
         rec.v = (z - self.z.0) / (self.z.1 - self.z.0);
         rec.t = t;
 
-        let outward_normal = Vec3::new(0.0, 1.0, 0.0);
+        let outward_normal = Vec3::new(1.0, 0.0, 0.0);
         rec.set_face_normal(r, &outward_normal);
 
         rec.mat_ptr = Arc::clone(&self.material);
