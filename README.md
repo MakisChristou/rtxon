@@ -24,6 +24,10 @@ cargo run --release
 ```
 
 ## Renders
+
+### 640x360, aa = 12800, depth = 100, f = 0.05, ~3.5h (Ryzen 5950x)
+<img src="images/render7.png" alt="Scene 1" width="650">
+
 ### 1280x720, aa = 1024, depth = 100, f = 0.05, ~10min (M2 Macbook Pro)
 <img src="images/render6.png" alt="Scene 1" width="650">
 
