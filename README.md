@@ -4,7 +4,7 @@ Yet another Rust raytracer implementation. The goal of this project is to famili
 
 ## Features
 - Basic Materials (Lambertian, Metal, Dielectric, Emmisive)
-- Shapes (Sphere, Rectangle)
+- Shapes (Sphere, Rectangle, Triangle)
 - Positionable Camera
 - Anti Aliasing
 - Depth of Field
