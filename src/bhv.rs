@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, sync::Arc};
+use std::{cmp::Ordering, rc::Rc};
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -7,15 +7,15 @@ use crate::{
 };
 
 pub struct BHVNode {
-    left: Arc<dyn Hitable>,
-    right: Arc<dyn Hitable>,
+    left: Rc<dyn Hitable>,
+    right: Rc<dyn Hitable>,
     some_box: AxisAlignedBoundingBox,
 }
 
 impl BHVNode {
     // Build the BHV structure in the constructor
     pub fn new(
-        mut src_objects: Vec<Arc<dyn Hitable>>,
+        mut src_objects: Vec<Rc<dyn Hitable>>,
         range: (usize, usize),
         time: (f64, f64),
     ) -> Self {
@@ -35,25 +35,25 @@ impl BHVNode {
         let mut right;
 
         if object_span == 1 {
-            left = Arc::clone(&src_objects[range.0]);
-            right = Arc::clone(&src_objects[range.0]);
+            left = Rc::clone(&src_objects[range.0]);
+            right = Rc::clone(&src_objects[range.0]);
         } else if object_span == 2 {
             if comparator(
-                &Arc::clone(&src_objects[range.0]),
-                &Arc::clone(&src_objects[range.0 + 1]),
+                &Rc::clone(&src_objects[range.0]),
+                &Rc::clone(&src_objects[range.0 + 1]),
             ) == Ordering::Less
             {
-                left = Arc::clone(&src_objects[range.0]);
-                right = Arc::clone(&src_objects[range.0 + 1])
+                left = Rc::clone(&src_objects[range.0]);
+                right = Rc::clone(&src_objects[range.0 + 1])
             } else {
-                left = Arc::clone(&src_objects[range.0 + 1]);
-                right = Arc::clone(&src_objects[range.0])
+                left = Rc::clone(&src_objects[range.0 + 1]);
+                right = Rc::clone(&src_objects[range.0])
             }
         } else {
             src_objects[range.0..range.1].sort_by(comparator);
             let mid = range.0 + object_span / 2;
-            left = Arc::new(BHVNode::new(src_objects.clone(), (range.0, mid), time));
-            right = Arc::new(BHVNode::new(src_objects, (mid, range.1), time));
+            left = Rc::new(BHVNode::new(src_objects.clone(), (range.0, mid), time));
+            right = Rc::new(BHVNode::new(src_objects, (mid, range.1), time));
         }
 
         match left.bounding_box(time) {
@@ -71,7 +71,7 @@ impl BHVNode {
         }
     }
 
-    fn box_compare(a: &Arc<dyn Hitable>, b: &Arc<dyn Hitable>, axis: usize) -> Ordering {
+    fn box_compare(a: &Rc<dyn Hitable>, b: &Rc<dyn Hitable>, axis: usize) -> Ordering {
         match a.bounding_box((0.0, 0.0)) {
             None => panic!("No bounding box in bvh_node constructor"),
             Some(box_a) => match b.bounding_box((0.0, 0.0)) {
@@ -89,15 +89,15 @@ impl BHVNode {
         }
     }
 
-    fn box_x_compare(a: &Arc<dyn Hitable>, b: &Arc<dyn Hitable>) -> Ordering {
+    fn box_x_compare(a: &Rc<dyn Hitable>, b: &Rc<dyn Hitable>) -> Ordering {
         return Self::box_compare(a, b, 0);
     }
 
-    fn box_y_compare(a: &Arc<dyn Hitable>, b: &Arc<dyn Hitable>) -> Ordering {
+    fn box_y_compare(a: &Rc<dyn Hitable>, b: &Rc<dyn Hitable>) -> Ordering {
         return Self::box_compare(a, b, 1);
     }
 
-    fn box_z_compare(a: &Arc<dyn Hitable>, b: &Arc<dyn Hitable>) -> Ordering {
+    fn box_z_compare(a: &Rc<dyn Hitable>, b: &Rc<dyn Hitable>) -> Ordering {
         return Self::box_compare(a, b, 2);
     }
 }

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox, lambertian::Lambertian, material::Material, ray::Ray,
@@ -13,7 +13,7 @@ pub struct HitRecord {
     pub u: f64,
     pub v: f64,
     pub front_face: bool,
-    pub mat_ptr: Arc<dyn Material>,
+    pub mat_ptr: Rc<dyn Material>,
 }
 
 impl HitRecord {
@@ -25,7 +25,7 @@ impl HitRecord {
             u: 0.0,
             v: 0.0,
             front_face: false,
-            mat_ptr: Arc::new(Lambertian::new(Color::new(255.0, 0.0, 0.0))),
+            mat_ptr: Rc::new(Lambertian::new(Color::new(255.0, 0.0, 0.0))),
         }
     }
 

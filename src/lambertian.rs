@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use crate::{
     hitable::HitRecord,
@@ -11,18 +11,18 @@ use crate::{
 };
 
 pub struct Lambertian {
-    albedo: Arc<dyn Texture>,
+    albedo: Rc<dyn Texture>,
 }
 
 impl Lambertian {
     pub fn new(albedo: Color) -> Self {
         let solid_color = SolidColor::new(albedo);
         Lambertian {
-            albedo: Arc::new(solid_color),
+            albedo: Rc::new(solid_color),
         }
     }
 
-    pub fn new_from_texture(texture: Arc<dyn Texture>) -> Self {
+    pub fn new_from_texture(texture: Rc<dyn Texture>) -> Self {
         Lambertian { albedo: texture }
     }
 }

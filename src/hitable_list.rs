@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::{
     aabb::AxisAlignedBoundingBox,
     hitable::{HitRecord, Hitable},
@@ -6,7 +8,7 @@ use crate::{
 };
 
 pub struct HitableList {
-    objects: Vec<Box<dyn Hitable>>,
+    objects: Vec<Rc<dyn Hitable>>,
 }
 
 impl HitableList {
@@ -21,7 +23,7 @@ impl HitableList {
     }
 
     pub fn add<T: Hitable + 'static>(&mut self, hitable: T) {
-        self.objects.push(Box::new(hitable));
+        self.objects.push(Rc::new(hitable));
     }
 }
 

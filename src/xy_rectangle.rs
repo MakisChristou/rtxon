@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -11,11 +11,11 @@ pub struct XYRectangle {
     x: (f64, f64),
     y: (f64, f64),
     k: f64,
-    material: Arc<dyn Material>,
+    material: Rc<dyn Material>,
 }
 
 impl XYRectangle {
-    pub fn new(x: (f64, f64), y: (f64, f64), k: f64, material: Arc<dyn Material>) -> Self {
+    pub fn new(x: (f64, f64), y: (f64, f64), k: f64, material: Rc<dyn Material>) -> Self {
         XYRectangle { x, y, k, material }
     }
 }
@@ -41,7 +41,7 @@ impl Hitable for XYRectangle {
         let outward_normal = Vec3::new(0.0, 0.0, 1.0);
         rec.set_face_normal(r, &outward_normal);
 
-        rec.mat_ptr = Arc::clone(&self.material);
+        rec.mat_ptr = Rc::clone(&self.material);
         rec.p = r.at(t);
 
         Some(rec)
