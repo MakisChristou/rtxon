@@ -3,12 +3,20 @@ Yet another Rust raytracer implementation. The goal of this project is to famili
 
 
 ## Features
-- Basic Materials (Lambertian, Metal, Dielectric)
-- Shapes (Sphere)
+- Basic Materials (Lambertian, Metal, Dielectric, Emmisive)
+- Shapes (Sphere, Rectangle)
 - Positionable Camera
 - Anti Aliasing
 - Depth of Field
+- Motion Blur
 - Cute progress bar when rendering
+
+## Future Features
+- Proper BHV implementation
+- Parallelism
+- GUI progress indicator
+- OBJ Import (required triangle intersection implementation)
+- HDR background for global illumination
 
 ## Rendering default scene
 ```bash
