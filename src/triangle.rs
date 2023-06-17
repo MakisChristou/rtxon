@@ -24,48 +24,54 @@ impl Hitable for Triangle {
     fn hit(&self, r: &crate::ray::Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let edge1 = self.b - self.a;
         let edge2 = self.c - self.a;
-        let normal = Vec3::unit_vector(&Vec3::cross(&edge1, &edge2));
+        let h = r.direction.cross(&edge2);
+        let a = Vec3::dot(&edge1, &h);
 
-        // Compute ray and triangle intersection using Möller–Trumbore algorithm
-        let p_vec = Vec3::cross(&r.direction, &edge2);
-        let det = Vec3::dot(&edge1, &p_vec);
-
-        // If the determinant is near zero, the ray lies in the plane of the triangle
-        if (det > -0.0001 && det < 0.0001) {
-            return None;
+        if a > -0.0001 && a < 0.0001 {
+            return None; // This ray is parallel to this triangle.
         }
 
-        let inv_det = -1.0 / det;
-        let t_vec = r.origin - self.a;
-        let u = Vec3::dot(&t_vec, &p_vec) * inv_det;
+        let f = 1.0 / a;
+        let s = r.origin - self.a;
+        let u = f * Vec3::dot(&s, &h);
 
         if u < 0.0 || u > 1.0 {
             return None;
         }
 
-        let q_vec = Vec3::cross(&t_vec, &edge1);
-        let v = Vec3::dot(&r.direction, &q_vec) * inv_det;
+        let q = s.cross(&edge1);
+        let v = f * Vec3::dot(&r.direction, &q);
 
         if v < 0.0 || u + v > 1.0 {
             return None;
         }
 
-        let t = Vec3::dot(&edge2, &q_vec) * inv_det;
+        // At this stage we can compute t to find out where the intersection point is on the line.
+        let t = f * Vec3::dot(&edge2, &q);
 
-        let mut rec = HitRecord::default();
+        if t > 0.0001 && t < t_max && t > t_min {
+            // ray intersection
+            let p = r.at(t);
+            let outward_normal = Vec3::unit_vector(&(self.b - self.a).cross(&(self.c - self.a)));
 
-        // if intersection exists, return HitRecord Option
-        if t > t_min && t < t_max {
-            rec.p = r.at(t);
-            rec.normal = normal;
-            rec.t = t;
-            rec.u = u;
-            rec.v = v;
-            rec.set_face_normal(r, &normal);
-            rec.mat_ptr = Rc::clone(&self.mat_ptr);
-            return Some(rec);
+            let (front_face, normal) = if Vec3::dot(&r.direction, &outward_normal) < 0.0 {
+                (true, outward_normal)
+            } else {
+                (false, -outward_normal)
+            };
+
+            Some(HitRecord {
+                p,
+                normal,
+                t,
+                u,
+                v,
+                front_face,
+                mat_ptr: Rc::clone(&self.mat_ptr),
+            })
+        } else {
+            None
         }
-        None
     }
 
     fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
