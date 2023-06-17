@@ -9,13 +9,14 @@ Yet another Rust raytracer implementation. The goal of this project is to famili
 - Anti Aliasing
 - Depth of Field
 - Motion Blur
+- OBJ Import
 - Cute progress bar when rendering
 
 ## Future Features
 - Proper BHV implementation
 - Parallelism
 - GUI progress indicator
-- OBJ Import (required triangle intersection implementation)
+- ~~OBJ Import~~
 - HDR background for global illumination
 
 ## Rendering default scene
@@ -26,7 +27,7 @@ cargo run --release
 ## Renders
 
 ### 640x360, aa = 12800, depth = 100, f = 0.05, ~3.5h (Ryzen 5950x)
-<img src="images/render7.png" alt="Scene 1" width="650">
+<img src="images/render7.png" alt="Cornell Box" width="650">
 
 ### 1280x720, aa = 1024, depth = 100, f = 0.05, ~10min (M2 Macbook Pro)
 <img src="images/render6.png" alt="Scene 1" width="650">
