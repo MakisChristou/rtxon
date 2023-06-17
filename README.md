@@ -25,24 +25,23 @@ cargo run --release
 ```
 
 ## Renders
-
-### 640x360, aa = 12800, depth = 100, f = 0.05, ~3.5h (Ryzen 5950x)
+### 640x360, samples = 128 * 500, depth = 100, f = 0.05, ~22h (Ryzen 5950x)
 <img src="images/render7.png" alt="Cornell Box" width="650">
 
-### 1280x720, aa = 1024, depth = 100, f = 0.05, ~10min (M2 Macbook Pro)
+### 1280x720, samples = 1024, depth = 100, f = 0.05, ~10min (M2 Macbook Pro)
 <img src="images/render6.png" alt="Scene 1" width="650">
 
-### 640x360, aa = 512, depth = 100, f = 0.05, ~44s (M2 Macbook Pro)
+### 640x360, samples = 512, depth = 100, f = 0.05, ~44s (M2 Macbook Pro)
 ![Scene 1](images/render1.png)
 
-### 640x360, aa = 512, depth = 100, f = 0.2, ~45s (M2 Macbook Pro)
+### 640x360, samples = 512, depth = 100, f = 0.2, ~45s (M2 Macbook Pro)
 ![Scene 2](images/render2.png)
 
-### 640x360, aa = 512, depth = 100, f = 1.0, ~65s (M2 Macbook Pro)
+### 640x360, samples = 512, depth = 100, f = 1.0, ~65s (M2 Macbook Pro)
 ![Scene 3](images/render3.png)
 
-### 640x360, aa = 128, depth = 100, f = 0.05, ~12s (M2 Macbook Pro)
+### 640x360, samples = 128, depth = 100, f = 0.05, ~12s (M2 Macbook Pro)
 ![Scene 4](images/render4.png)
 
-### 640x360, aa = 512, depth = 100, f = 0.1, ~7min (M2 Macbook Pro)
+### 640x360, samples = 512, depth = 100, f = 0.1, ~7min (M2 Macbook Pro)
 ![Scene 5](images/render5.png)
