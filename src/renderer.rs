@@ -65,7 +65,7 @@ impl Renderer {
             }
         }
 
-        return Color::new(0.0, 0.0, 0.0);
+        // return Color::new(0.0, 0.0, 0.0);
 
         // If hit nothing return background
         let unit_direction = Vec3::unit_vector(&r.direction());

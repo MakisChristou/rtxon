@@ -16,6 +16,7 @@ mod renderer;
 mod solid_color;
 mod sphere;
 mod texture;
+mod triangle;
 mod utils;
 mod vec3;
 mod xy_rectangle;
@@ -35,13 +36,50 @@ use crate::vec3::Vec3;
 use checker_texture::CheckerTexture;
 use config::Config;
 use diffuse_light::DiffuseLight;
-use indicatif::{ProgressBar, ProgressState, ProgressStyle};
+use material::Material;
 use moving_sphere::MovingSphere;
 use renderer::Renderer;
-use std::{fmt::Write, rc::Rc};
+use triangle::Triangle;
 use xy_rectangle::XYRectangle;
 use xz_rectangle::XZRectangle;
 use yz_rectangle::YZRectangle;
+
+use indicatif::{ProgressBar, ProgressState, ProgressStyle};
+use std::path::Path;
+use std::{fmt::Write, rc::Rc};
+use tobj::{self, LoadOptions};
+
+
+fn obj_import_as_triangles(path: &str, material: Rc<dyn Material>) -> HitableList {
+    let mut world = HitableList::new();
+
+    let obj_file = Path::new("models/teapot.obj");
+
+    let (models, _) =
+        tobj::load_obj(&obj_file, &LoadOptions::default()).expect("Failed to load file");
+
+    for (_, model) in models.iter().enumerate() {
+        let mesh = &model.mesh;
+
+        // Mesh's indices are organized as triplets, so we'll
+        // take them three at a time
+        for triangle in mesh.indices.chunks(3) {
+            if let [v1, v2, v3] = *triangle {
+                let v1 = mesh.positions[(v1 as usize) * 3..(v1 as usize) * 3 + 3].to_vec();
+                let v2 = mesh.positions[(v2 as usize) * 3..(v2 as usize) * 3 + 3].to_vec();
+                let v3 = mesh.positions[(v3 as usize) * 3..(v3 as usize) * 3 + 3].to_vec();
+
+                let v1 = Vec3::new(v1[0] as f64, v1[1] as f64, v1[2] as f64);
+                let v2 = Vec3::new(v2[0] as f64, v2[1] as f64, v2[2] as f64);
+                let v3 = Vec3::new(v3[0] as f64, v3[1] as f64, v3[2] as f64);
+
+                world.add(Triangle::new(v1, v2, v3, material.clone()));
+            }
+        }
+    }
+
+    world
+}
 
 fn random_scene() -> (HitableList, Camera) {
     let ground_material = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -564,17 +602,61 @@ fn cornell_box_scene() -> (HitableList, Camera) {
     (world, cam)
 }
 
+fn teapot_scene() -> (HitableList, Camera) {
+    let mut world = HitableList::new();
+
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    let material_center = Rc::new(Lambertian::new(Color::new(1.0, 1.0, 1.0)));
+    let material_left = Rc::new(Lambertian::new(Color::new(0.2, 0.3, 1.0)));
+    let material_right = Rc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));
+    let white = Rc::new(Lambertian::new(Color::new(0.73, 0.73, 0.73)));
+
+    // world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
+    // world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
+    // world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_ground));
+
+    // Add teapot triangles
+    world = obj_import_as_triangles("models/teapot.obj", white);
+
+    // Add ground sphere
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground.clone(),
+    ));
+
+    let aspect_ratio = 16.0 / 9.0;
+    let look_from = Vec3::new(0.0, 4.0, -6.0);
+    let look_at = Vec3::new(0.0, 0.5, 1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let dist_to_focus = (look_from - look_at).length();
+    let appreture = 0.05;
+
+    let cam = Camera::new(
+        look_from,
+        look_at,
+        vup,
+        40.0,
+        aspect_ratio,
+        appreture,
+        dist_to_focus,
+        None,
+    );
+
+    (world, cam)
+}
+
 fn main() {
     // Image
-    let aspect_ratio = 1.0;
-    let image_width: usize = 320;
+    let aspect_ratio = 16.0 / 9.0;
+    let image_width: usize = 100;
     let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
     // Scene
-    let (world, cam) = cornell_box_scene();
+    let (world, cam) = teapot_scene();
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
