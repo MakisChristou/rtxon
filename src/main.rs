@@ -80,7 +80,7 @@ fn obj_import_as_triangles(path: &str, material: Rc<dyn Material>) -> HitableLis
     world
 }
 
-fn random_scene() -> (HitableList, Camera) {
+fn random_scene() -> (HitableList, Camera, Color, f64) {
     let ground_material = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     let mut world = HitableList::new();
     world.add(Sphere::new(
@@ -151,10 +151,11 @@ fn random_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn random_moving_scene() -> (HitableList, Camera) {
+fn random_moving_scene() -> (HitableList, Camera, Color, f64) {
     let ground_material = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     let mut world = HitableList::new();
     world.add(Sphere::new(
@@ -231,10 +232,11 @@ fn random_moving_scene() -> (HitableList, Camera) {
         Some((0.0, 1.0)),
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn checker_scene() -> (HitableList, Camera) {
+fn checker_scene() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let checker_texture = Rc::new(CheckerTexture::new(
@@ -275,10 +277,11 @@ fn checker_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn checker_emmisive_material_scene() -> (HitableList, Camera) {
+fn checker_emmisive_material_scene() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let checker_texture = Rc::new(CheckerTexture::new(
@@ -324,10 +327,11 @@ fn checker_emmisive_material_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(0.0, 0.0, 0.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn scene1() -> (HitableList, Camera) {
+fn scene1() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
@@ -370,10 +374,11 @@ fn scene1() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn scene2() -> (HitableList, Camera) {
+fn scene2() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -409,10 +414,11 @@ fn scene2() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn scene3() -> (HitableList, Camera) {
+fn scene3() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -448,10 +454,11 @@ fn scene3() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn scene4() -> (HitableList, Camera) {
+fn scene4() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -487,10 +494,11 @@ fn scene4() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(1.0, 1.0, 1.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn rectangular_light_scene() -> (HitableList, Camera) {
+fn rectangular_light_scene() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -535,10 +543,11 @@ fn rectangular_light_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(0.0, 0.0, 0.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn cornell_box_scene() -> (HitableList, Camera) {
+fn cornell_box_scene() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let glass = Rc::new(Dielectric::new(1.5));
@@ -598,10 +607,11 @@ fn cornell_box_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(0.0, 0.0, 0.0);
+    (world, cam, background, aspect_ratio)
 }
 
-fn teapot_scene() -> (HitableList, Camera) {
+fn teapot_scene() -> (HitableList, Camera, Color, f64) {
     let mut world = HitableList::new();
 
     let material_ground = Rc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
@@ -644,20 +654,20 @@ fn teapot_scene() -> (HitableList, Camera) {
         None,
     );
 
-    (world, cam)
+    let background = Color::new(0.0, 0.0, 0.0);
+    (world, cam, background, aspect_ratio)
 }
 
 fn main() {
-    // Image
-    let aspect_ratio = 16.0 / 16.0;
-    let image_width: usize = 600;
+    // Scene
+    let (world, cam, background, aspect_ratio) = cornell_box_scene();
+
+    // Image Settings
+    let image_width: usize = 300;
     let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
-
-    // Scene
-    let (world, cam) = cornell_box_scene();
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
@@ -674,7 +684,8 @@ fn main() {
 
     let mut renderer = Renderer::new(config, world, cam, Some(pb));
 
-    match renderer.render_current_frame() {
+    renderer.render_current_frame(&background);
+    match renderer.save("output.png") {
         Ok(()) => {
             println!("Frame saved succesfully")
         }

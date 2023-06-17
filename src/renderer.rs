@@ -7,6 +7,7 @@ use crate::{
     ray::Ray,
     utils::{color::Color, get_corrected_color, random_double, INFINITY},
     vec3::Vec3,
+    // thread_pool::Job,
 };
 use image::ImageError;
 use indicatif::ProgressBar;
@@ -49,6 +50,15 @@ impl Renderer {
         imgbuf.save(file_path)
     }
 
+    pub fn save(&self, file_path: &str) -> Result<(), ImageError> {
+        Self::save_image(
+            &self.pixel_colours,
+            self.config.image_width,
+            self.config.image_height,
+            file_path,
+        )
+    }
+
     fn ray_color(r: &Ray, background: &Color, world: &dyn Hitable, depth: usize) -> Color {
         if depth == 0 {
             return *background;
@@ -65,18 +75,12 @@ impl Renderer {
             }
         }
 
-        // return Color::new(0.0, 0.0, 0.0);
-
-        // If hit nothing return background
-        let unit_direction = Vec3::unit_vector(&r.direction());
-        let t = (unit_direction.y + 1.0) * 0.5;
-        Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
+        return *background;
     }
 
-    pub fn render_current_frame(&mut self) -> Result<(), ImageError> {
+    pub fn render_current_frame(&mut self, background: &Color) {
         // For updating the progress bar
         let mut rendered = 0;
-        let background = Color::new(0.0, 0.0, 0.0);
 
         for j in (0..self.config.image_height).rev() {
             for i in 0..self.config.image_width {
@@ -104,14 +108,5 @@ impl Renderer {
                     get_corrected_color(pixel_color, self.config.samples_per_pixel as f64);
             }
         }
-
-        Self::save_image(
-            &self.pixel_colours,
-            self.config.image_width,
-            self.config.image_height,
-            "output.png",
-        )?;
-
-        Ok(())
     }
 }
