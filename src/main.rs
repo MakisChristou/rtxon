@@ -49,11 +49,10 @@ use std::path::Path;
 use std::{fmt::Write, rc::Rc};
 use tobj::{self, LoadOptions};
 
-
 fn obj_import_as_triangles(path: &str, material: Rc<dyn Material>) -> HitableList {
     let mut world = HitableList::new();
 
-    let obj_file = Path::new("models/teapot.obj");
+    let obj_file = Path::new(path);
 
     let (models, _) =
         tobj::load_obj(&obj_file, &LoadOptions::default()).expect("Failed to load file");
@@ -610,18 +609,20 @@ fn teapot_scene() -> (HitableList, Camera) {
     let material_left = Rc::new(Lambertian::new(Color::new(0.2, 0.3, 1.0)));
     let material_right = Rc::new(Metal::new(Color::new(1.0, 0.2, 0.3), 0.1));
     let white = Rc::new(Lambertian::new(Color::new(0.73, 0.73, 0.73)));
+    let diffuse_light = Rc::new(DiffuseLight::new(Color::new(10.0, 10.0, 10.0)));
 
     // world.add(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center));
     // world.add(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left));
-    // world.add(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_ground));
 
     // Add teapot triangles
     world = obj_import_as_triangles("models/teapot.obj", white);
 
+    world.add(Sphere::new(Vec3::new(-2.0, 5.0, -1.0), 0.5, diffuse_light));
+
     // Add ground sphere
     world.add(Sphere::new(
-        Vec3::new(0.0, -100.5, -1.0),
-        100.0,
+        Vec3::new(0.0, -1000.0, -1.0),
+        1000.0,
         material_ground.clone(),
     ));
 
@@ -636,7 +637,7 @@ fn teapot_scene() -> (HitableList, Camera) {
         look_from,
         look_at,
         vup,
-        40.0,
+        60.0,
         aspect_ratio,
         appreture,
         dist_to_focus,
@@ -648,15 +649,15 @@ fn teapot_scene() -> (HitableList, Camera) {
 
 fn main() {
     // Image
-    let aspect_ratio = 16.0 / 9.0;
-    let image_width: usize = 100;
+    let aspect_ratio = 16.0 / 16.0;
+    let image_width: usize = 600;
     let samples_per_pixel = 128 * 1;
     let max_depth = 100;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
     // Scene
-    let (world, cam) = teapot_scene();
+    let (world, cam) = cornell_box_scene();
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
