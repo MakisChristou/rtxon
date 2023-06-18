@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -7,8 +7,9 @@ use crate::{
     vec3::Vec3,
 };
 
+#[derive(Clone)]
 pub struct HitableList {
-    objects: Vec<Rc<dyn Hitable>>,
+    objects: Vec<Arc<dyn Hitable>>,
 }
 
 impl HitableList {
@@ -23,7 +24,7 @@ impl HitableList {
     }
 
     pub fn add<T: Hitable + 'static>(&mut self, hitable: T) {
-        self.objects.push(Rc::new(hitable));
+        self.objects.push(Arc::new(hitable));
     }
 }
 

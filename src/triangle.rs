@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -11,11 +11,11 @@ pub struct Triangle {
     a: Vec3,
     b: Vec3,
     c: Vec3,
-    mat_ptr: Rc<dyn Material>,
+    mat_ptr: Arc<dyn Material>,
 }
 
 impl Triangle {
-    pub fn new(a: Vec3, b: Vec3, c: Vec3, mat_ptr: Rc<dyn Material>) -> Self {
+    pub fn new(a: Vec3, b: Vec3, c: Vec3, mat_ptr: Arc<dyn Material>) -> Self {
         Triangle { a, b, c, mat_ptr }
     }
 }
@@ -67,7 +67,7 @@ impl Hitable for Triangle {
                 u,
                 v,
                 front_face,
-                mat_ptr: Rc::clone(&self.mat_ptr),
+                mat_ptr: Arc::clone(&self.mat_ptr),
             })
         } else {
             None

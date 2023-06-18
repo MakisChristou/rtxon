@@ -5,7 +5,7 @@ pub struct ScatterRay {
     pub attenuation: Color,
 }
 
-pub trait Material {
+pub trait Material: Sync + Send {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterRay>;
     fn emitted(&self, u: f64, v: f64, p: &Vec3) -> Color {
         Color::new(0.0, 0.0, 0.0)

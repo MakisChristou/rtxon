@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -12,11 +12,11 @@ use crate::{
 pub struct Sphere {
     center: Vec3,
     radius: f64,
-    mat_ptr: Rc<dyn Material>,
+    mat_ptr: Arc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, mat_ptr: Rc<dyn Material>) -> Self {
+    pub fn new(center: Vec3, radius: f64, mat_ptr: Arc<dyn Material>) -> Self {
         Sphere {
             center,
             radius,
@@ -63,7 +63,7 @@ impl Hitable for Sphere {
         let outward_normal = (rec.p - self.center) / self.radius;
         (rec.u, rec.v) = Self::get_sphere_uv(&outward_normal);
         rec.set_face_normal(r, &outward_normal);
-        rec.mat_ptr = Rc::clone(&self.mat_ptr);
+        rec.mat_ptr = Arc::clone(&self.mat_ptr);
 
         Some(rec)
     }

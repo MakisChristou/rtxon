@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Config {
     pub aspect_ratio: f64,
     pub image_width: usize,

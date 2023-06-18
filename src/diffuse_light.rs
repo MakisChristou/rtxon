@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{
     hitable::HitRecord,
@@ -11,16 +11,16 @@ use crate::{
 };
 
 pub struct DiffuseLight {
-    pub emit: Rc<dyn Texture>,
+    pub emit: Arc<dyn Texture>,
 }
 
 impl DiffuseLight {
     pub fn new(c: Color) -> Self {
         DiffuseLight {
-            emit: Rc::new(SolidColor::new(c)),
+            emit: Arc::new(SolidColor::new(c)),
         }
     }
-    pub fn new_from_texture(emit: Rc<dyn Texture>) -> Self {
+    pub fn new_from_texture(emit: Arc<dyn Texture>) -> Self {
         DiffuseLight { emit }
     }
 }

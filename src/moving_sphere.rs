@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{
     aabb::AxisAlignedBoundingBox,
@@ -12,7 +12,7 @@ pub struct MovingSphere {
     pub center: (Vec3, Vec3),
     pub time: (f64, f64),
     pub radius: f64,
-    pub mat_ptr: Rc<dyn Material>,
+    pub mat_ptr: Arc<dyn Material>,
 }
 
 impl MovingSphere {
@@ -20,7 +20,7 @@ impl MovingSphere {
         center: (Vec3, Vec3),
         time: (f64, f64),
         radius: f64,
-        mat_ptr: Rc<dyn Material>,
+        mat_ptr: Arc<dyn Material>,
     ) -> Self {
         MovingSphere {
             center,
@@ -68,7 +68,7 @@ impl Hitable for MovingSphere {
 
             let outward_normal = (rec.p - self.center(time)) / self.radius;
             rec.set_face_normal(r, &outward_normal);
-            rec.mat_ptr = Rc::clone(&self.mat_ptr);
+            rec.mat_ptr = Arc::clone(&self.mat_ptr);
 
             Some(rec)
         } else {
