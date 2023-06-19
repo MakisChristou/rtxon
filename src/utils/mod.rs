@@ -2,6 +2,7 @@ pub mod color;
 
 use crate::utils::color::Color;
 use rand::Rng;
+use std::cell::RefCell;
 
 // Static variables
 pub static INFINITY: f64 = std::f64::INFINITY;
@@ -49,12 +50,16 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
 }
 
+thread_local! {
+    static RNG: std::cell::RefCell<rand::rngs::ThreadRng>  = RefCell::new(rand::thread_rng());
+}
+
 // Random Number Utilities
 pub fn random_double(range: Option<(f64, f64)>) -> f64 {
-    match range {
-        Some(range) => rand::thread_rng().gen_range(range.0..range.1),
-        None => rand::thread_rng().gen_range(0.0..1.0),
-    }
+    RNG.with(|rng| match range {
+        Some(range) => rng.borrow_mut().gen_range(range.0..range.1),
+        None => rng.borrow_mut().gen_range(0.0..1.0),
+    })
 }
 
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
