@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox, lambertian::Lambertian, material::Material, ray::Ray,
-    utils::color::Color, vec3::Vec3,
+    aabb::AxisAlignedBoundingBox, material::Material, ray::Ray, utils::color::Color, vec3::Vec3,
+    Lambertian,
 };
 
 #[derive(Clone)]

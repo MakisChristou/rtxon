@@ -3,13 +3,9 @@ mod bhv;
 mod camera;
 mod checker_texture;
 mod config;
-mod dielectric;
-mod diffuse_light;
 mod hitable;
 mod hitable_list;
-mod lambertian;
 mod material;
-mod metal;
 mod moving_sphere;
 mod ray;
 mod renderer;
@@ -25,10 +21,11 @@ mod xz_rectangle;
 mod yz_rectangle;
 
 use crate::camera::Camera;
-use crate::dielectric::Dielectric;
 use crate::hitable_list::HitableList;
-use crate::lambertian::Lambertian;
-use crate::metal::Metal;
+use crate::material::lambertian::Lambertian;
+use crate::material::dielectric::Dielectric;
+use crate::material::metal::Metal;
+use crate::material::diffuse_light::DiffuseLight;
 use crate::sphere::Sphere;
 use crate::utils::color::Color;
 use crate::utils::random_double;
@@ -36,7 +33,7 @@ use crate::vec3::Vec3;
 
 use checker_texture::CheckerTexture;
 use config::Config;
-use diffuse_light::DiffuseLight;
+
 use material::Material;
 use moving_sphere::MovingSphere;
 use renderer::Renderer;

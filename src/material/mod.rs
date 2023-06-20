@@ -1,3 +1,8 @@
+pub mod dielectric;
+pub mod lambertian;
+pub mod metal;
+pub mod diffuse_light;
+
 use crate::{hitable::HitRecord, ray::Ray, utils::color::Color, vec3::Vec3};
 
 pub struct ScatterRay {
