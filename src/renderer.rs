@@ -1,16 +1,14 @@
-use std::sync::{mpsc, Arc};
+use std::sync::mpsc;
 
 use crate::{
     camera::Camera,
     config::Config,
+    hitable::hitable_list::HitableList,
     hitable::Hitable,
-    hitable_list::HitableList,
     material::ScatterRay,
     ray::Ray,
     thread_pool::ThreadPool,
-    // thread_pool::Job,
     utils::{color::Color, get_corrected_color, random_double, INFINITY},
-    vec3::Vec3,
 };
 use image::ImageError;
 use indicatif::ProgressBar;

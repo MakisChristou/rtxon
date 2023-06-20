@@ -1,3 +1,11 @@
+pub mod hitable_list;
+pub mod moving_sphere;
+pub mod sphere;
+pub mod triangle;
+pub mod xy_rectangle;
+pub mod xz_rectangle;
+pub mod yz_rectangle;
+
 use std::sync::Arc;
 
 use crate::{
