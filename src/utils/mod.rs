@@ -1,7 +1,7 @@
 pub mod color;
 
 use crate::utils::color::Color;
-use rand::{Rng, rngs::SmallRng, SeedableRng};
+use rand::{rngs::SmallRng, Rng, SeedableRng};
 use std::cell::RefCell;
 
 // Static variables
