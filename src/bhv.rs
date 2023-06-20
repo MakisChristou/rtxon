@@ -109,7 +109,7 @@ impl Hitable for BHVNode {
             Some(_hit_record) => {
                 let hit_left = self.left.hit(r, t_min, t_max);
 
-                let t_max_right = if let Some(left_rec) = hit_left.clone() {
+                let t_max_right = if let Some(left_rec) = &hit_left {
                     left_rec.t
                 } else {
                     t_max
@@ -134,6 +134,6 @@ impl Hitable for BHVNode {
     }
 
     fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
-        Some(self.some_box.clone())
+        Some(self.some_box)
     }
 }

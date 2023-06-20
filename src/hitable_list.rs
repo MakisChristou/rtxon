@@ -39,7 +39,7 @@ impl Hitable for HitableList {
             if let Some(temp_rec) = object.hit(r, t_min, closest_so_far) {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
-                rec = Some(temp_rec.clone());
+                rec = Some(temp_rec);
             }
         }
         rec
