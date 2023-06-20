@@ -1,7 +1,7 @@
 pub mod color;
 
 use crate::utils::color::Color;
-use rand::Rng;
+use rand::{Rng, rngs::SmallRng, SeedableRng};
 use std::cell::RefCell;
 
 // Static variables
@@ -51,7 +51,7 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 }
 
 thread_local! {
-    static RNG: std::cell::RefCell<rand::rngs::ThreadRng>  = RefCell::new(rand::thread_rng());
+    static RNG: RefCell<rand::rngs::SmallRng> = RefCell::new(SmallRng::from_entropy());
 }
 
 // Random Number Utilities
