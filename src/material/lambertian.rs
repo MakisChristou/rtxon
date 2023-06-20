@@ -4,7 +4,7 @@ use crate::{
     hitable::HitRecord,
     material::{Material, ScatterRay},
     ray::Ray,
-    solid_color::SolidColor,
+    texture::solid_color::SolidColor,
     texture::Texture,
     utils::color::Color,
     vec3::Vec3,

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{solid_color::SolidColor, texture::Texture, utils::color::Color, vec3::Vec3};
+use crate::{texture::solid_color::SolidColor, texture::Texture, utils::color::Color, vec3::Vec3};
 
 pub struct CheckerTexture {
     pub odd: Arc<dyn Texture>,

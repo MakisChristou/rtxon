@@ -1,4 +1,5 @@
-use std::sync::Arc;
+pub mod checker_texture;
+pub mod solid_color;
 
 use crate::{utils::color::Color, vec3::Vec3};
 
