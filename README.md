@@ -14,7 +14,7 @@ Yet another Rust raytracer implementation. The goal of this project is to famili
 
 ## Future Features
 - Proper BHV implementation
-- Parallelism
+- ~~Parallelism~~
 - GUI progress indicator
 - ~~OBJ Import~~
 - HDR background for global illumination
