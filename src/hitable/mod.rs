@@ -9,8 +9,7 @@ pub mod yz_rectangle;
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox, material::Material, ray::Ray, utils::color::Color, vec3::Vec3,
-    Lambertian,
+    aabb::Aabb, material::Material, ray::Ray, utils::color::Color, vec3::Vec3, Lambertian,
 };
 
 #[derive(Clone)]
@@ -49,5 +48,5 @@ impl HitRecord {
 
 pub trait Hitable: Send + Sync {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox>;
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb>;
 }

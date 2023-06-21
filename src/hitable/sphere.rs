@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox,
+    aabb::Aabb,
     hitable::{HitRecord, Hitable},
     material::Material,
     ray::Ray,
@@ -68,8 +68,8 @@ impl Hitable for Sphere {
         Some(rec)
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::AxisAlignedBoundingBox> {
-        Some(AxisAlignedBoundingBox::new(
+    fn bounding_box(&self, time: (f64, f64)) -> Option<crate::aabb::Aabb> {
+        Some(Aabb::new(
             self.center - Vec3::new(self.radius, self.radius, self.radius),
             self.center + Vec3::new(self.radius, self.radius, self.radius),
         ))

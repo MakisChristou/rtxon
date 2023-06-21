@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, sync::Arc};
 
 use crate::{
-    aabb::AxisAlignedBoundingBox,
+    aabb::Aabb,
     hitable::{HitRecord, Hitable},
     utils::random_int,
 };
@@ -9,7 +9,7 @@ use crate::{
 pub struct BHVNode {
     left: Arc<dyn Hitable>,
     right: Arc<dyn Hitable>,
-    some_box: AxisAlignedBoundingBox,
+    some_box: Aabb,
 }
 
 impl BHVNode {
@@ -61,7 +61,7 @@ impl BHVNode {
                 Some(box_right) => BHVNode {
                     left,
                     right,
-                    some_box: AxisAlignedBoundingBox::surrounding_box(box_left, box_right),
+                    some_box: Aabb::surrounding_box(box_left, box_right),
                 },
                 None => panic!("No bounding box in bvh_node constructor"),
             },
@@ -133,7 +133,7 @@ impl Hitable for BHVNode {
         }
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb> {
         Some(self.some_box)
     }
 }

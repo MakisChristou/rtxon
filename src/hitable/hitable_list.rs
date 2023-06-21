@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox,
+    aabb::Aabb,
     hitable::{HitRecord, Hitable},
     ray::Ray,
     vec3::Vec3,
@@ -45,13 +45,12 @@ impl Hitable for HitableList {
         rec
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb> {
         if self.objects.is_empty() {
             return None;
         }
 
-        let mut output_box =
-            AxisAlignedBoundingBox::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0));
+        let mut output_box = Aabb::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0));
         let mut first_box = true;
 
         for object in &self.objects {
@@ -59,7 +58,7 @@ impl Hitable for HitableList {
                 output_box = if first_box {
                     temp_box
                 } else {
-                    AxisAlignedBoundingBox::surrounding_box(output_box, temp_box)
+                    Aabb::surrounding_box(output_box, temp_box)
                 };
                 first_box = false
             }

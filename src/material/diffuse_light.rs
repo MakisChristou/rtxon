@@ -5,7 +5,7 @@ use crate::{
     material::{Material, ScatterRay},
     ray::Ray,
     texture::solid_color::SolidColor,
-    texture::{Texture},
+    texture::Texture,
     utils::color::Color,
     vec3::Vec3,
 };

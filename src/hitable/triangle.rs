@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox,
+    aabb::Aabb,
     hitable::{HitRecord, Hitable},
     material::Material,
     vec3::Vec3,
@@ -74,7 +74,7 @@ impl Hitable for Triangle {
         }
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb> {
         todo!()
     }
 }

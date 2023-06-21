@@ -5,12 +5,12 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub struct AxisAlignedBoundingBox {
+pub struct Aabb {
     pub minimum: Vec3,
     pub maximum: Vec3,
 }
 
-impl Hitable for AxisAlignedBoundingBox {
+impl Hitable for Aabb {
     // We don't care about returning actual values in the hit record just that we hit SOME record
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         for a in 0..3 {
@@ -33,14 +33,14 @@ impl Hitable for AxisAlignedBoundingBox {
         Some(HitRecord::default())
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb> {
         todo!()
     }
 }
 
-impl AxisAlignedBoundingBox {
+impl Aabb {
     pub fn new(minimum: Vec3, maximum: Vec3) -> Self {
-        AxisAlignedBoundingBox { minimum, maximum }
+        Aabb { minimum, maximum }
     }
 
     pub fn andrew_kensler_hit(&self, r: &Ray, t_min: f64, t_max: f64) -> bool {
@@ -64,10 +64,7 @@ impl AxisAlignedBoundingBox {
         true
     }
 
-    pub fn surrounding_box(
-        box0: AxisAlignedBoundingBox,
-        box1: AxisAlignedBoundingBox,
-    ) -> AxisAlignedBoundingBox {
+    pub fn surrounding_box(box0: Aabb, box1: Aabb) -> Aabb {
         let small = Vec3::new(
             f64::min(box0.minimum.x, box1.minimum.x),
             f64::min(box0.minimum.y, box1.minimum.y),
@@ -80,7 +77,7 @@ impl AxisAlignedBoundingBox {
             f64::min(box0.maximum.z, box1.maximum.z),
         );
 
-        AxisAlignedBoundingBox {
+        Aabb {
             minimum: small,
             maximum: big,
         }

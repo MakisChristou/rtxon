@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    aabb::AxisAlignedBoundingBox,
+    aabb::Aabb,
     hitable::{HitRecord, Hitable},
     material::Material,
     vec3::Vec3,
@@ -47,10 +47,10 @@ impl Hitable for YZRectangle {
         Some(rec)
     }
 
-    fn bounding_box(&self, time: (f64, f64)) -> Option<AxisAlignedBoundingBox> {
+    fn bounding_box(&self, time: (f64, f64)) -> Option<Aabb> {
         // The bounding box must have non-zero width in each dimension, so pad the Z
         // dimension a small amount.
-        Some(AxisAlignedBoundingBox {
+        Some(Aabb {
             minimum: Vec3::new(self.y.0, self.z.0, self.k - 0.0001),
             maximum: Vec3::new(self.y.1, self.z.1, self.k + 0.0001),
         })
