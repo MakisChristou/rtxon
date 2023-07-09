@@ -9,7 +9,11 @@ pub mod yz_rectangle;
 use std::sync::Arc;
 
 use crate::{
-    aabb::Aabb, material::Material, ray::Ray, utils::color::Color, vec3::Vec3, Lambertian,
+    aabb::Aabb,
+    material::{lambertian::Lambertian, Material},
+    ray::Ray,
+    utils::color::Color,
+    vec3::Vec3,
 };
 
 #[derive(Clone)]

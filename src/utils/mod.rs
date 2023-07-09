@@ -1,8 +1,14 @@
 pub mod color;
 
-use crate::utils::color::Color;
+use crate::{
+    hitable::{hitable_list::HitableList, triangle::Triangle},
+    material::Material,
+    utils::color::Color,
+    vec3::Vec3,
+};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
-use std::cell::RefCell;
+use std::{cell::RefCell, path::Path, sync::Arc};
+use tobj::LoadOptions;
 
 // Static variables
 pub static INFINITY: f64 = std::f64::INFINITY;
@@ -48,6 +54,37 @@ pub fn random_int(start: usize, end: usize) -> usize {
 
 pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.0
+}
+
+pub fn obj_import_as_triangles(path: &str, material: Arc<dyn Material>) -> HitableList {
+    let mut world = HitableList::new();
+
+    let obj_file = Path::new(path);
+
+    let (models, _) =
+        tobj::load_obj(&obj_file, &LoadOptions::default()).expect("Failed to load file");
+
+    for (_, model) in models.iter().enumerate() {
+        let mesh = &model.mesh;
+
+        // Mesh's indices are organized as triplets, so we'll
+        // take them three at a time
+        for triangle in mesh.indices.chunks(3) {
+            if let [v1, v2, v3] = *triangle {
+                let v1 = mesh.positions[(v1 as usize) * 3..(v1 as usize) * 3 + 3].to_vec();
+                let v2 = mesh.positions[(v2 as usize) * 3..(v2 as usize) * 3 + 3].to_vec();
+                let v3 = mesh.positions[(v3 as usize) * 3..(v3 as usize) * 3 + 3].to_vec();
+
+                let v1 = Vec3::new(v1[0] as f64, v1[1] as f64, v1[2] as f64);
+                let v2 = Vec3::new(v2[0] as f64, v2[1] as f64, v2[2] as f64);
+                let v3 = Vec3::new(v3[0] as f64, v3[1] as f64, v3[2] as f64);
+
+                world.add(Triangle::new(v1, v2, v3, material.clone()));
+            }
+        }
+    }
+
+    world
 }
 
 thread_local! {
