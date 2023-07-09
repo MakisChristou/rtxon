@@ -135,7 +135,7 @@ impl Renderer {
             println!("{}, {}", range.0, range.1);
 
             let result_sender = result_sender.clone();
-            let cloned_world = self.world.clone();
+            let cloned_world = self.world.clone(); // This is an Arc clone actually not a deep clone
             let config = self.config.clone();
             let cam = self.cam.clone();
             let background = background.clone();

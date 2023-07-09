@@ -45,3 +45,34 @@ cargo run --release
 
 ### 640x360, samples = 512, depth = 100, f = 0.1, ~7min (M2 Macbook Pro)
 ![Scene 5](images/render5.png)
+
+
+## Command-line Arguments
+
+```bash
+$ rtxon --help
+A Raytracer In One Weekend implementation
+
+Usage: rtxon [OPTIONS]
+
+Options:
+  -s, --scene <SCENE>              Scene to render (default Cornell Box) [default: 9]
+  -w, --width <WIDTH>              Size of the tuple in decimal digits [default: 600]
+  -s, --samples <SAMPLES>          Samples per pixel [default: 128]
+  -m, --max-depth <MAX_DEPTH>      Primorial offset [default: 100]
+  -o, --output-path <OUTPUT_PATH>  Desired output location [default: output.png]
+  -t, --threads <THREADS>          Threads [default: 1]
+  -c, --chunks <CHUNKS>            Threadpool Chunks [default: 1]
+  -h, --help                       Print help
+  -V, --version                    Print version
+```
+
+### Render default scene with 10 threads
+```bash
+$ rtxon --output-path render.png --max-depth 100 --samples 128 --width 600 --threads 10 --chunks 10
+```
+
+### Render checker scene with 10 threads
+```bash
+$ rtxon --output-path render.png --scene 2 --max-depth 100 --samples 128 --width 600 --threads 10 --chunks 10
+```

@@ -650,8 +650,26 @@ fn teapot_scene() -> (HitableList, Camera, Color, f64) {
 fn main() {
     let args = <args::Args>::parse();
 
+    let scenes = vec![
+        random_scene,
+        random_moving_scene,
+        checker_scene,
+        checker_emmisive_material_scene,
+        scene1,
+        scene2,
+        scene3,
+        scene4,
+        rectangular_light_scene,
+        cornell_box_scene,
+        teapot_scene,
+    ];
+
+    if args.scene >= scenes.len() {
+        panic!("Scene {} does not exist there are {} scenes", args.scene, scenes.len());
+    }
+
     // Scene
-    let (world, cam, background, aspect_ratio) = cornell_box_scene();
+    let (world, cam, background, aspect_ratio) = scenes[args.scene]();
 
     // Image Settings
     let image_width: usize = args.width;
@@ -662,6 +680,7 @@ fn main() {
 
     // Progress Bar
     let pb = ProgressBar::new(config.image_height as u64 * config.image_width as u64);
+     
     pb.set_style(
         ProgressStyle::with_template(
             "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] ({eta})",
@@ -675,7 +694,7 @@ fn main() {
 
     let mut renderer = Renderer::new(config, world, cam, Some(pb));
 
-    renderer.render_current_frame_threadpool(background, args.threads, args.chucks);
+    renderer.render_current_frame_threadpool(background, args.threads, args.chunks);
 
     match renderer.save(&args.output_path) {
         Ok(()) => {

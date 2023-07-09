@@ -4,6 +4,10 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
+    /// Scene to render (default Cornell Box)
+    #[arg(short, long, default_value_t = 9)]
+    pub scene: usize,
+
     /// Size of the tuple in decimal digits
     #[arg(short, long, default_value_t = 600)]
     pub width: usize,
@@ -26,5 +30,5 @@ pub struct Args {
 
     /// Threadpool Chunks
     #[arg(short, long, default_value_t = 1)]
-    pub chucks: usize,
+    pub chunks: usize,
 }
