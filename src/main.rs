@@ -1,4 +1,5 @@
 mod aabb;
+mod args;
 mod bhv;
 mod camera;
 mod config;
@@ -21,6 +22,7 @@ use crate::material::metal::Metal;
 use crate::utils::color::Color;
 use crate::utils::random_double;
 use crate::vec3::Vec3;
+use clap::{Args, Parser};
 use config::Config;
 use hitable::moving_sphere::MovingSphere;
 use hitable::triangle::Triangle;
@@ -646,13 +648,15 @@ fn teapot_scene() -> (HitableList, Camera, Color, f64) {
 }
 
 fn main() {
+    let args = <args::Args>::parse();
+
     // Scene
     let (world, cam, background, aspect_ratio) = cornell_box_scene();
 
     // Image Settings
-    let image_width: usize = 600;
-    let samples_per_pixel = 128 * 1;
-    let max_depth = 100;
+    let image_width: usize = args.width;
+    let samples_per_pixel = args.samples;
+    let max_depth = args.max_depth;
 
     let config = Config::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
@@ -671,9 +675,9 @@ fn main() {
 
     let mut renderer = Renderer::new(config, world, cam, Some(pb));
 
-    renderer.render_current_frame_threadpool(background, 10, 10);
+    renderer.render_current_frame_threadpool(background, args.threads, args.chucks);
 
-    match renderer.save("output.png") {
+    match renderer.save(&args.output_path) {
         Ok(()) => {
             println!("Frame saved succesfully")
         }
